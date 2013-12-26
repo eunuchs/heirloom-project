@@ -1,0 +1,36 @@
+* Sccsid @(#)bu	1.1 (gritter) 3/8/07
+-1
+"no description file after -f flag"
+You need to specify a makefile with the -f option.
+-7
+"no arguments or description file"
+There is no "makefile" in the current directory, and
+you did not supply an explicit target.
+-10
+"too many command lines for <target>"
+There may be only one set of commands for "<target>:".
+-21
+"*** Error code <N>"
+An external command returned the non-zero code <N>. Fix
+the command line, or use the .IGNORE special target or
+supply the -i option to override this condition.
+-22
+"couldn't load shell"
+The program specified with the $(SHELL) macro could not
+be executed.
+-24
+"cannot load ..."
+An external program could not be executed.
+-36
+"inconsistent rules lines for <target>"
+There were "<target>:" as well as "<target>::" lines in
+the makefile.
+-39
+"Must be a separator on rules line ..."
+A line that is neither a macro assignment nor a command
+line must contain a target list ending with ":" or "::".
+-42
+"don't know how to make <target>"
+No command lines were specified for <target> in the
+makefile, and make does not know how to build that file
+using built-in rules.

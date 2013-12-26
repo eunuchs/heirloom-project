@@ -1,0 +1,245 @@
+How to configure and install mailx
+==================================
+
+Quick start
+-----------
+
+        make
+        make install
+
+No 'configure' step is necessary anymore. If 'make install' fails because
+no /usr/ucb/install program is present, try
+
+        make install UCBINSTALL=/usr/bin/install
+
+Detailed description
+--------------------
+
+Path names are configurable as Makefile variables:
+
+PREFIX          The default Makefile puts BINDIR and MANDIR below this.
+
+BINDIR          The mailx binary is installed there.
+
+MANDIR          The mailx manual page is put in $(MANDIR)/man1.
+
+SYSCONFDIR      nail.rc is installed in this directory unless it already
+                exists.
+
+MAILSPOOL       The directory where the mail files of users are stored
+                under their respective names and in mbox format. If only
+                POP3 is used to read mail, the value does not matter.
+
+SENDMAIL        Path to the de-facto standard /usr/lib/sendmail interface
+                normally offered by Unix MTAs. If only SMTP is used to send
+                mail, the value does not matter. Note that if you want to
+                use the '-r' option in mailx, the sendmail interface must
+                support the '-r' option too.
+
+DESTDIR         Prepended to BINDIR, MANDIR etc. at 'make install'. Mostly
+                useful for package building.
+
+UCBINSTALL      Path name to a BSD-style install, like /usr/ucb/install on
+                SVR4 or GNU install.
+
+STRIP		A command to strip the binary at 'make install'. Use the
+		do-nothing command ':' to avoid stripping.
+
+Mailx uses a simple shell script named 'makeconfig' to check for header
+files and library functions. It is automatically invoked by 'make all'.
+The script generates three files, 'config.h', 'LIBS', and 'config.log'.
+'config.h' is included as usual, 'LIBS' contains options for the linker,
+and 'config.log' contains all test programs and test results. Neither of
+these files is changed by make once it exists until 'make mrproper' is
+run, so they can be edited by hand without much fear of losing them.
+
+Useful Makefile targets:
+
+all             Initiates the build; just type 'make'.
+
+install         Installs the binary and the manual page. If the systemwide
+                configuration file is not present already, is is also
+                installed.
+
+clean           Removes object files.
+
+mrproper        Removes object files and the configuration results.
+
+Makefile variables to control the build process:
+
+CFLAGS          Flags for the C compiler, such as '-O'.
+
+CPPFLAGS        Flags for the C preprocessor. Some versions of glibc on
+                Linux need '-D_GNU_SOURCE' here, or wcwidth() will not be
+                available and multibyte characters cannot be displayed
+                correctly.
+
+INCLUDES        A list of additional include file directories, as
+                '-I/usr/local/include'. Use this to locate the include
+                files for NSS, OpenSSL, or iconv(3), if they are not present
+                in the standard include directories. Also, some versions
+                of RedHat Linux need -I/usr/kerberos/include to compile
+                with OpenSSL, or to compile with GSSAPI authentication
+                included.
+
+LDFLAGS         Flags for the linker. To compile with GSSAPI authentication
+                included, some RedHat versions need -L/usr/kerberos/lib.
+                Also use this to specify the NSS or OpenSSL library path.
+
+LIBS            A list of additional libraries such as '-lfoo'. -lsocket,
+                -lnsl, -lssl, -lcrypto, -liconv, and NSS libraries are
+                automatically included by makeconfig and should not be
+                put into this.
+
+As usual with Makefile variables, you can pass these values to make in
+the environment or on the command line. Thus if you want to avoid to edit
+the Makefile, you can create a shell script to invoke make, or set flags
+of general use (such as CFLAGS) in .profile. Note that passing flags on
+the command line does not override those specified in the Makefile itself
+with several commercial versions of make in combination with the recursive
+make calls that are executed at configuration time.
+
+
+Transition remarks concerning the old configure system
+======================================================
+
+* --prefix and other common configure options: Path names can be specified
+  in the Makefile or as assignment arguments to make.
+
+* --with-openssl: No longer available. Mailx is always built with OpenSSL
+  support if possible. If you really want to have a mailx binary without
+  OpenSSL support, edit config.h after running 'make config.h'.
+
+* --enable-all-chars: No longer available at compile time. 'print-all-chars'
+  can be set in mailx in those cases where use of this option was necessary.
+
+* --with-rcfile, --with-mailspool, --with-sendmail: These path names can
+  be set in the Makefile or as arguments to make.
+
+* --with-csh: No longer used. Mailx now uses /bin/sh for executing commands
+  if the SHELL variable is not set.
+
+* --with-more, --with-pg, --with-ed, --with-vi: No longer available. If the
+  PAGER, EDITOR, or VISUAL variables are not set, the executable is looked
+  up using $PATH.
+
+* --with-catname=NAME: Contact the author if you want usable message
+  catalogue support.
+
+In short, if you were using
+--------
+
+        ./configure --prefix=/opt/nail --with-rcfile=/opt/nail/etc/nail.rc
+
+up to now, replace it by
+
+        make PREFIX=/opt/mailx SYSCONFDIR=/opt/mailx/etc
+
+The DESTDIR variable for building packages is available as before.
+If you intend to build mailx packages, a look at 'mailx.spec' might
+be helpful - even if you don't use RPM, the process is likely to
+be similar.
+
+
+Why autoconf/automake are no longer used
+========================================
+
+Autoconf and automake are systems of considerable complexity which
+one must know well to make real use of them. The autoconf/automake
+scripts for mailx were supplied by a contributor in 2000 and were
+out of date as of 2004; they wouldn't work with recent versions of
+automake, in particular. But I'm not very interested in learning
+automake myself, and I'm absolutely not interested in keeping such
+knowledge up-to-date with new automake versions.
+
+Furthermore, I've made some horrible hacks for the autoconf/automake
+scripts in previous versions (such as --with-rcfile) because once one
+doesn't like some particular behavior of them, working around can be
+difficult. Such hacks are unnecessary now.
+
+The new build system needs approximately the same number of lines
+as just the maintainer-supplied portions of the old autoconf/automake
+system did. Since it is written in standard languages (shell and make),
+any Unix developer can read and understand it; to make adjustments to
+it, no special versions of third-party tools are needed. Every serious
+developer should understand the advantage (except perhaps some GNU
+addicts who have learned and installed all versions of automake anyway).
+
+For the user who just wants to build mailx, the new system is not more
+complicated than the old one; transition mostly involves passing path
+names to make instead of passing them to configure. (It's not even an
+argument that the user needs to know the names of Makefile variables;
+--prefix didn't work as designed by the GNU folks with the old system
+anyway.)
+
+In short, everything is better now.
+
+
+Building S/MIME and SSL/TLS support using Mozilla NSS
+=====================================================
+
+It is possible to build encryption support using Mozilla NSS instead
+of OpenSSL. Doing so has both advantages and disadvantages:
+
+- With NSS, mailx can use the same key and certificate databases as the
+  Mozilla applications (Mozilla Suite, Firefox, Thunderbird). This makes
+  it possible to install and configure certificates at one central location.
+  Note that running mailx and Mozilla at the same time from one certificate
+  directory may result in 'Bad database' errors in mailx if Mozilla modifies
+  the configuration files (mailx never modifies them). If you encounter such
+  problems, create a copy of the .db files for exclusive use with mailx.
+
+- OpenSSL offers more transparent control over certificates. While it is
+  possible to modify the NSS databases using command line utilities (see
+  <http://www.mozilla.org/projects/security/pki/nss/tools/>), it is
+  certainly easier to use PEM files along with descriptions in OpenSSL if
+  direct control is desired (e.g. for batch use).
+
+- NSS supports S/MIME in both versions 2 and 3, OpenSSL currently only
+  supports version 2.
+
+- Building OpenSSL is much easier than building NSS for use with non-Mozilla
+  applications like mailx.
+
+To build using NSS, you need both the NSS and the NSPR libraries/include
+files from the Mozilla project. If you are using a Linux distribution,
+chances are that you can install appropriate RPMs from your vendor, e.g.
+
+seamonkey-nspr-1.0.5-0.1.el4.centos4
+seamonkey-nspr-devel-1.0.5-0.1.el4.centos4
+seamonkey-nss-1.0.5-0.1.el4.centos4
+seamonkey-nss-devel-1.0.5-0.1.el4.centos4
+
+for CentOS 4. Note that you can install these without installing the
+RPM for the Mozilla main application. Thus it is no problem if you prefer
+to use a more recent Mozilla installation in /opt or so. NSS and NSPR are not
+updated as often as the Mozilla end-user applications in recent times (but you
+should watch for possible future security fixes regardless, of course.)
+
+If you have these RPMs installed, you can uncomment the marked lines in either
+the Makefile or in mailx.spec. Mailx should then build cleanly with NSS support
+included, and that's all.
+
+On recent Solaris versions, NSS and NSPR are available in the packages
+SUNWmoznss, SUNWmoznss-devel, SUNWmoznspr, and SUNWmoznspr-devel. If these
+packages are installed, the following make variables activate NSS support:
+INCLUDES=-I/usr/sfw/include/mozilla/nspr -I/usr/sfw/include/mozilla/nss
+LDFLAGS=-L/usr/sfw/lib/mozilla -R/usr/sfw/lib/mozilla
+
+If you want to use NSS without RPMS, you can get binary or source .tar.gz
+archives from the Mozilla project pages:
+
+<http://www.mozilla.org/projects/security/pki/nss/>
+<http://www.mozilla.org/projects/nspr/>
+
+Or you can use the files from a Mozilla application build directory if you
+are building Mozilla Suite, Firefox, Thunderbird etc. from source. Just set
+the INCLUDES and LDFLAGS variables appropriately.
+
+If both NSS and OpenSSL are available, NSS is used. This is just because
+NSS is normally not found without special action, and thus the build process
+simply assumes that you want to build NSS if it manages to build the test
+executable.
+
+
+        Gunnar Ritter                                   12/25/06

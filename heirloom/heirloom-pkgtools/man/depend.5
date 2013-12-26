@@ -1,0 +1,97 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2000, Sun Microsystems, Inc.  All Rights Reserved
+.\" Copyright 1989 AT&T
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)depend.5	1.4 (gritter) 2/26/07
+.\"
+.\" from OpenSolaris depend 4 "4 Oct 1996" "SunOS 5.11" "File Formats"
+.TH DEPEND 5 "2/26/07" "Heirloom Packaging Tools" "File Formats"
+.SH NAME
+depend \- software dependencies file
+.SH DESCRIPTION
+\fBdepend\fR is an \fBASCII\fR file used to specify information concerning software dependencies for a particular package.
+The file is created by a software developer.
+.PP
+Each entry in the \fBdepend\fR file describes a single software package.
+The instance of the package is described after the entry line by giving the package architecture and/or version.
+The format of each entry and subsequent instance definition is:
+.PP
+.RS
+.nf
+\fItype pkg name
+	(arch)version
+	(arch)version
+.\|.\|.\fR
+.fi
+.RE
+.PP
+The fields are:
+.TP 14
+.B type
+Defines the dependency type.
+Must be one of the following characters:
+.RS 16
+.TP
+.B P
+Indicates a prerequisite for installation; for example, the referenced package or versions must be installed.
+.TP
+.B I
+Implies that the existence of the indicated package or version is incompatible.
+.TP
+.B R
+Indicates a reverse dependency.
+Instead of defining the package's own dependencies, this designates that another package depends on this one.
+This type should be used only when an old package does not have a \fBdepend\fR file,
+but relies on the newer package nonetheless.
+Therefore, the present package should not be removed if the designated old package is still on the system since, if it is removed, the old package will no longer work.
+.RE
+.TP 14
+\fB\fIpkg\fR
+Indicates the package abbreviation.
+.TP
+\fB\fIname\fR
+Specifies the full package name.
+.TP
+\fB\fI(arch)version\fR
+Specifies a particular instance of the software.
+A version name cannot begin with a left parenthesis.
+The instance specifications, both \fI(arch)\fR and \fIversion\fR,
+are completely optional, but each \fI(arch)version\fR pair must begin on a new line that begins with white space.
+A null version set equates to any version of the indicated package.
+.SH EXAMPLES
+\fBExample 1 \fRSample of \fBdepend\fR file
+.LP
+Here are the contents of a sample \fBdepend\fR file, for the \fBSUNWftpr\fR (FTP Server) package, stored in \fB/var/sadm/pkg/SUNWftpr/install\fR:
+.PP
+.RS
+.nf
+P SUNWcar       Core Architecture, (Root)
+P SUNWkvm       Core Architecture, (Kvm)
+P SUNWcsr       Core Solaris, (Root)
+P SUNWcsu       Core Solaris, (Usr)
+P SUNWcsd       Core Solaris Devices
+P SUNWcsl       Core Solaris Libraries
+R SUNWftpu      FTP Server, (Usr)
+.fi
+.RE
+.SH SEE ALSO
+.IR pkginfo (5)

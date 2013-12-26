@@ -1,0 +1,67 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 1999, Sun Microsystems, Inc.
+.\"
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)rmdel.1	1.6 (gritter) 2/1/07
+.\"
+.\" from OpenSolaris sccs-rmdel 1 "1 Nov 1999" "SunOS 5.11" "User Commands"
+.TH RMDEL 1 "2/1/07" "Heirloom Development Tools" "User Commands"
+.SH NAME
+rmdel \- remove a delta from an SCCS file
+.SH SYNOPSIS
+\fBrmdel\fR \fB\-r\fR\fIsid\fR \fIs.filename\fR...
+.SH DESCRIPTION
+.LP
+The \fIrmdel\fR utility removes the delta specified by the \s-1SCCS\s+1 delta \s-1ID\s+1 (\s-1SID\s+1) supplied with \fB\-r\fR.
+The delta to be removed must be the most recent (leaf) delta in its branch.
+In addition, the \s-1SID\s+1 must \fInot\fR be that of a version checked out for editing: it must not appear in any entry of the version lock file (\fBp.\fRfile).
+.PP
+If you created the delta, or, if you own the file and directory and have write permission, you can remove it with \fIrmdel\fR.
+.PP
+If a directory name is used in place of the \fIs.filename\fR argument, the \fIrmdel\fR command applies to all \fBs.\fRfiles in that directory.
+Unreadable \fBs.\fRfiles produce an error; processing continues with the next file (if any).
+The use of `\fB\(mi\fR' as the \fIs.filename\fR argument indicates that the names of files are to be read from the standard input, one \fBs.\fRfile per
+line.
+.TP
+\fB\-r\fR\fIsid\fR
+Remove the version corresponding to the indicated \s-1SID\s+1 (delta).
+.SH FILES
+.TP 14
+.PD 0
+\fBp.\fR\fBfile\fR
+permissions file
+.TP
+\fBs.\fR\fBfile\fR
+history file
+.TP
+\fBz.\fR\fBfile\fR
+temporary copy of the \fBs.\fRfile
+.PD
+.SH SEE ALSO
+delta(1), 
+get(1),
+help(1), 
+prs(1), 
+sccsfile(5)
+.SH DIAGNOSTICS
+Use the \s-1SCCS\s+1 \fIhelp\fR command for explanations (see 
+\fIhelp\fR(1)).

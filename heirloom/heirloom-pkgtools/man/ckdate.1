@@ -1,0 +1,183 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T  Copyright (c) 1992, Sun Microsystems, Inc.  All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)ckdate.1	1.5 (gritter) 3/4/07
+.\"
+.\" from OpenSolaris ckdate 1 "14 Sep 1992" "SunOS 5.11" "User Commands"
+.TH CKDATE 1 "3/4/07" "Heirloom Packaging Tools" "User Commands"
+.SH NAME
+ckdate, errdate, helpdate, valdate \- prompts for and validates a date
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBckdate\fR [\fB\-Q\fR] [\fB\-W\fR \fIwidth\fR] [\fB\-f\fR \fIformat\fR] [\fB\-d\fR \fIdefault\fR] [\fB\-h\fR \fIhelp\fR]
+[\fB\-e\fR \fIerror\fR] [\fB\-p\fR \fIprompt\fR] [\fB\-k\fR \fIpid\fR [\fB\-s\fR \fIsignal\fR]]
+.HP
+.PD 0
+.ad l
+\fBerrdate\fR [\fB\-W\fR \fIwidth\fR] [\fB\-e\fR \fIerror\fR] [\fB\-f\fR \fIformat\fR]
+.HP
+.PD 0
+.ad l
+\fBhelpdate\fR [\fB\-W\fR \fIwidth\fR] [\fB\-h\fR \fIhelp\fR] [\fB\-f\fR \fIformat\fR]
+.HP
+.PD 0
+.ad l
+\fBvaldate\fR [\fB\-f\fR \fIformat\fR] \fIinput\fR
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+The \fBckdate\fR utility prompts a user and validates the response.
+It defines, among other things, a prompt message whose response should be a date, text for help and error messages,
+and a default value (which will be returned if the user responds with a RETURN).
+The user response must match the defined format for a date.
+.PP
+All messages are limited in length to 70 characters and are formatted automatically.
+Any white space used in the definition (including newline) is stripped.
+The \fB\-W\fR option cancels the
+automatic formatting.
+When a tilde is placed at the beginning or end of a message definition, the default text will be inserted at that point, allowing both custom text and the default text to be displayed.
+.PP
+If the prompt, help or error message is not defined, the default message (as defined under \fBNOTES\fR) will be displayed.
+.PP
+Three visual tool modules are linked to the \fBckdate\fR command.
+They are \fBerrdate\fR (which formats and displays an error message), \fBhelpdate\fR (which
+formats and displays a help message), and \fBvaldate\fR (which validates a response).
+These modules should be used in conjunction with FML objects.
+In this instance, the FML object defines
+the prompt.
+When \fBformat\fR is defined in the \fBerrdate\fR and \fBhelpdate\fR modules, the messages will describe the expected format.
+.PP
+The following options and operands are supported:
+.PD 0
+.TP 12
+\fB\-d\fR \fIdefault\fR
+Defines the default value as \fIdefault\fR.
+The default does not have to meet the format criteria.
+.TP
+\fB\-e\fR \fIerror\fR
+Defines the error message as \fIerror\fR.
+.TP
+\fB\-f\fR \fIformat\fR
+Specifies the format against which the input will be verified.
+Possible formats and their definitions are:
+.RS 12
+.TP
+\fB%b\fR =\fR
+abbreviated month name (jan, feb, mar)
+.TP
+\fB%B\fR =\fR
+full month name \fB%d\fR = day of month (01 - 31)
+.TP
+\fB%D\fR =\fR
+date as %m/%d/%y (the default format)
+.TP
+\fB%e\fR =\fR
+day of month (1 - 31; single digits are preceded by a blank)
+.TP
+\fB%h\fR =\fR
+abbreviated month name, identical to \fB%b%\fR
+.TP
+\fB%m\fR =\fR
+month number (01 - 12)
+.TP
+\fB%y\fR =\fR
+year within century (for instance, 89)
+.TP
+\fB%Y\fR =\fR
+year as \fBCCYY\fR (for instance, 1989)
+.RE
+.TP 12
+\fB\-h\fR\fI help\fR
+Defines the help messages as \fBhelp\fR.
+.TP
+\fB\-k\fR\fI pid\fR
+Specifies that process \fBID\fR \fIpid\fR is to be sent a signal
+if the user chooses to abort.
+.TP
+\fB\-p\fR\fI prompt\fR
+Defines the prompt message as \fIprompt\fR.
+.TP
+\fB\-Q\fR
+Specifies that quit will not be allowed as a valid response.
+.TP
+\fB\-s\fR\fI signal\fR
+Specifies that the process \fBID\fR \fIpid\fR defined with
+the \fB\-k\fR option is to be sent signal \fBsignal\fR when quit is chosen.
+If no signal is specified, SIGTERM is used.
+.TP
+\fB\-W\fR\fI width\fR
+Specifies that prompt, help and error messages will be formatted to a line length of \fBwidth\fR.
+.TP
+\fB\fIinput\fR
+Input to be verified against format criteria.
+.PD
+.SH EXIT STATUS
+.PD 0
+The following exit values are returned:
+.TP
+.B 0
+Successful execution.
+.TP
+.B 1
+\fBEOF\fR on input, or negative width on \fB\-W\fR option, or usage error.
+.TP
+.B 3
+User termination (quit).
+.TP
+.B 4
+Garbled format argument.
+.PD
+.SH NOTES
+.PD 0
+The default prompt for \fBckdate\fR is:
+.PP
+.in +2
+.nf
+Enter the date [?,q]:
+.fi
+.in -2
+.PP
+The default error message is:
+.PP
+.in +2
+.nf
+ERROR - Please enter a date.
+Format is <format>.
+.fi
+.in -2
+.PP
+The default help message is:
+.PP
+.in +2
+.nf
+Please enter a date.
+Format is <format>.
+.fi
+.in -2
+.PP
+When the quit option is chosen (and allowed), \fBq\fR is returned along with the return code \fB3\fR.
+The \fBvaldate\fR module will not produce any output.
+It returns zero for success and non-zero for failure.

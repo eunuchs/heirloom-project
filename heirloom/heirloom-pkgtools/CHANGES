@@ -1,0 +1,13 @@
+Release ...
+* Fixed "?" for owner and group entries (Dave Grothe).
+* The user input validation tools "ckgid", "ckint", "ckitem", "ckkeywd",
+  "ckpath", "ckrange", "ckstr", "cktime", "ckuid", and "ckyorn" have been
+  added along with their "get...", "disp...", "err...", "help...", and
+  "val..." variants.
+* An OpenSolaris-derived implementation of getopt() is now included,
+  defeating the argument reordering of the glibc variant.
+* Fixed a makefile error that prevented compilation on CentOS 5.
+* It is now possible to use flex for compilation (patch by Peter Kruse).
+
+Release 070227
+* Initial release.

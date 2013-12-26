@@ -1,0 +1,100 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T  Copyright (c) 1996, Sun Microsystems, Inc.  All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)pkgparam.1	1.8 (gritter) 2/25/07
+.\"
+.\" from OpenSolaris pkgparam 1 "6 Nov 2000" "SunOS 5.11" "User Commands"
+.TH PKGPARAM 1 "2/25/07" "Heirloom Packaging Tools" "User Commands"
+.SH NAME
+pkgparam \- display package parameter values
+.SH SYNOPSIS
+.HP
+.PD 0
+.ad l
+.nh
+\fBpkgparam\fR [\fB\-v\fR] [\fB\-d\fR \fIdevice\fR] [\fB\-R\fR \fIroot_path\fR] \fIpkginst\fR [\fIparam\fR]...
+.HP
+.PD 0
+.ad l
+\fBpkgparam\fR \fB\-f\fR \fIfilename\fR [\fB\-v\fR] [\fIparam\fR]...
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+\fBpkgparam\fR displays the value associated with the parameter or parameters requested on the command line.
+The values are located in either the
+.IR pkginfo (5)
+file for \fIpkginst\fR or from the specific file named with the \fB\-f\fR option.
+.PP
+One parameter value is shown per line.
+Only the value of a parameter is given unless the \fB\-v\fR option is used.
+With this option, the output of the command is in this format:
+.PP
+.RS
+.nf
+\fIparameter1\fR\fB='\fR\fIvalue1\fR\fB'\fR
+\fIparameter2\fR\fB='\fR\fIvalue2\fR\fB'\fR
+\fIparameter3\fR\fB='\fR\fIvalue3\fR\fB'\fR
+.fi
+.RE
+.PP
+If no parameters are specified on the command line, values for all parameters associated with the package are shown.
+.PP
+Options and arguments for this command are: 
+.TP 13
+\fB\-d\fR\fI device\fR
+Specify the \fIdevice\fR on which a \fIpkginst\fR is stored.
+It can be a directory pathname or the identifiers for tape, floppy disk, or removable disk (for example, \fB/var/tmp\fR, \fB/dev/diskette\fR, and \fB/dev/dsk/c1d0s0\fR).
+The special token \fBspool\fR may be used to represent the default installation spool directory (\fB/var/spool/pkg\fR).
+.TP
+\fB\-f\fR\fI filename\fR
+Read \fIfilename\fR for parameter values.
+.TP
+\fB\-R\fR\fI root_path\fR
+Defines the full path name of a subdirectory to use as the \fIroot_path\fR.
+All files,
+including package system information files, are relocated to a directory tree starting in the specified \fIroot_path\fR.
+.TP
+.B \-v
+Verbose mode.
+Display name of parameter and its value.
+.TP
+\fB\fIpkginst\fR
+Defines a specific package instance for which parameter values should be displayed.
+.TP
+\fB\fIparam\fR
+Defines a specific parameter whose value should be displayed.
+.PP
+If parameter information is not available for the indicated package, the command exits with a non-zero status.
+.SH SEE ALSO
+.IR pkgmk (1),
+.IR pkgproto (1),
+.IR pkgtrans (1),
+.IR pkginfo (5)
+.SH NOTES
+With the \fB\-f\fR option, you can specify the file from which parameter values should be extracted.
+This file should be in the same format as a
+.IR pkginfo (4)
+file.
+For example, such a file might be created during package development and used while testing software during this
+stage.

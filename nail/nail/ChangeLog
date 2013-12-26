@@ -1,0 +1,1342 @@
+[12.5] as of 7/5/10
+* The undocumented contenttype-cntrl option works again (patch by
+  Laurent Parenteau).
+
+[12.5] as of 6/20/10
+* Fixed a message corruption that occurred when the "inc" command was used
+  with a mbox format mailbox after encrypted messages had been viewed
+  (reported by Martin Neitzel).
+* Fixed a condition that caused mailx to hang when looking at a message,
+  copying that message, and issuing a "z" command evaluating an uncached
+  portion of an IMAP folder.
+* Make it compile with OpenSSL 1.0.0-beta2 (patch by Bernhard Rosenkränzer).
+* When executing an "account" command, ensure that the values of the "hold",
+  "keepsave", "append", and "emptybox" variables remain those of the previous
+  account for all outstanding operations on that account (bug reported by
+  Jeff Woodall).
+* Support Gmail IMAP semantics of "delete" turning into "archive". Previously,
+  when mailx was setting the "\Deleted" flag on a message, it did not set any
+  other flags. This caused mails that had been read and then deleted to appear
+  as unread in Gmail's "All Mail". Now, flags besides "\Deleted" are also set,
+  so that they are kept in the archived copy (reported by Jeremy O'Brien).
+* For RFC 2047 MIME "encoded-word" parts in headers, assume that the end of
+  each word resets the conversion state (Yedidyah Bar-David).
+* When the ORGANIZATION variable has an empty value, do not generate an
+  "Organization:" header field. Previously, this condition resulted in
+  mailx refusing to send mail (Thomas E. Kammeyer).
+* When classifying messages with the junk filter, when selecting the most
+  representative tokens, prefer non-junk tokens over junk tokens if both
+  have the same (reversed) probability, in order to avoid false positives.
+* When calculating the probabilities of tokens that have occurred only in
+  good messages or only in junk messages so far, and these tokens occurred
+  less than ten times, give them slightly less than the minimum/maximum.
+* Fixed "unignore" and similar commands; they did not work at all so far
+  (http://www.freebsd.org/cgi/query-pr.cgi?pr=146280).
+
+[12.4] released 7/29/08
+* With the "-E" command line option or if the "skipemptybody" variable is
+  set, outgoing messages that contain no text in their first or only part
+  are not sent but silently discarded (contributed by Eygene Ryabinkin).
+* Support for SMTP AUTH PLAIN has been added (contributed by Joe Feise).
+  Set "smtp-auth=plain" to use it.
+* When the text of an outgoing message contains illegal byte sequences
+  in non-interactive mode, do not refuse sending it but send it with
+  the "application/octet-stream" content type instead (thanks for the
+  report and further help to Hilko Bengen).
+* When an attachment that would have a "text/something" content type
+  contains illegal byte sequences, it is now reliably sent out with the
+  "application/octet-stream" content type instead (bugreport by
+  Hilko Bengen).
+* The values of the "sendcharsets" variable are now separately traversed
+  for each part of a multipart message, so that if e.g. the main body can
+  be represented in ISO-8859-1 but an attachment text needs UTF-8, these
+  two encodings will be chosen, respectively.
+* Fixed a bug that caused messages to be truncated with IMAP servers that
+  use LF as line ending in message data, such as Google Mail (reported by 
+  Matthew L. Shobe).
+* Do not run filename expansion for IMAP or POP3 mailboxes names, making
+  it possible to select mailboxes that contain both brackets and spaces
+  in their names (reported by Matthew L. Shobe).
+* Fixed the format of the timezone in "Date" header fields for zones in
+  the Western Hemisphere whose offsets are not an integral number of hours
+  (patch by Matthew Fischer).
+* Print an error message when an attempt is made to S/MIME sign a
+  message but no "from" address can be determined (Georgi Stanojevski).
+* Made the getopt() substitute work with the getopt$UNIX2003() function
+  redirection mechanism on Mac OS X Leopard.
+* Fixed an incorrect type of enum (patch by Matthew Fischer).
+
+[12.3] released 7/15/07
+* Multibyte characters are now handled correctly when printing texts
+  encoded in base64. Previously, if a multibyte character spanned
+  across a line in the base64-encoded representation, it was not
+  recognized, and substitution characters were printed instead.
+* In an SMTP exchange, ignore if the server closes the connection
+  following the QUIT command instead of sending a proper response code,
+  fixing a problem with GMail (Dr. Gary E. Rafe).
+* A null pointer dereference that lead to a segmentation fault when
+  the user hit return at a yes/no question has been fixed (patch by
+  Martin Neitzel).
+* If no proper boundary is present in a MIME multipart message, print
+  a notification message since otherwise no content is shown at all
+  (problem reported by Thomas Wolff).
+* When both standard input and standard output refer to a terminal,
+  ignore SIGPIPE since there is no reason why it should ever terminate
+  mailx then. This fixes problems with mailx terminating when reading
+  a message and ^C is typed in the pager under some circumstances
+  (analysis by Stephen Isard and Perry Hutchison).
+* Build without socket support again (patch by Andreas Niederl).
+* Fixed a single quote in "makeconfig" that could cause a problem with
+  the C preprocessor (patch by Martin Neitzel).
+* Building with recent versions of Mozilla NSS is now possible.
+
+[12.2] released 1/7/07
+* When a MIME message part is not of the "text/" content type, always
+  send it in base64 to avoid issues with CRLF conversion (David Ronis).
+* Character set conversion is now also applied to attachments if they
+  have the "text/" content type. This is necessary because with the
+  "sendcharsets" variable, the character set declaration that becomes
+  effective in the message part is otherwise unpredictable.
+* Character set conversion is now only applied to message parts that
+  have the "text/" content type. Previously, a message part that did
+  not contain any control characters but was not of type "text/" was
+  converted.
+* When message file names in a maildir folder do not contain the ":2,"
+  preceding the flags part, append one (Brandon Andrews).
+* An invalid memory access when determining the current message in
+  threaded mode has been fixed (MJ Ray).
+* A "STRIP" makefile variable has been introduced to control the strip
+  command at "make install".
+* The "remove" command no longer causes a core dump because of a null
+  pointer dereference when it is given a name with invalid shell syntax.
+* Made it compile on UnixWare again (patch by Joe Julian).
+* Fixes to build with more recent versions of Mozilla NSS.
+
+[12.1] released 6/15/06
+* The base64 encoder also used an invalid encoding for the last unit of
+  data if (bytes_of_input % 3 == 1). As with the previous similar bug,
+  most base64 decoders, including mailx's own, ignore such bits since
+  base64 data is always a multiple of 8-bit bytes. (Patch by
+  Lukasz Stelmach.)
+* Quotes are now placed around the "protocol" parameter in S/MIME headers
+  in accordance to RFC 2045 (Marco Arioli, Jeffrey Stedfast).
+* The conversion of messages in state-dependent encodings has been fixed;
+  garbage characters could be inserted because the state was not properly
+  reset when a buffer was enlarged (patch by Matthew Fischer).
+* A warning about an initalization of an unsigned value to -1 has been
+  eliminated (patch by Matthew Sienkiewicz).
+* Percent characters in the "prompt" variable are now handled correctly;
+  values of "folder" beginning with an at character and longer than the
+  maximum system path length do not cause a heap overflow anymore (patch
+  by Ulf Harnhammar).
+
+[12.0] released 3/4/06
+* The program has been integrated into the Heirloom project as "mailx". The
+  new project homepage is at <http://heirloom.sourceforge.net/mailx.html>.
+  The name "nail" will persist in some places, and the mailing list will
+  remain with the same address for now. If you want to continue to call
+  the program as "nail", create a symbolic link to "mailx".
+* Mailx no longer prints a space before the address in "MAIL FROM:<xxx>" and
+  "RCPT TO:<xxx>" in SMTP. This should make it work with Sendmail X (bugs
+  reported by Stephane Lentz and Claus Assmann).
+* The new "-S variable[=value]" command line option sets the internal option
+  "variable", and, in case of a string option, assigns "value" to it (based
+  on a request by Dmitry Butskoy).
+* If the "smtp-auth-user" variable is set but neither "smtp-auth-password"
+  nor a matching "smtp-auth-password-user@host" can be found, the user is
+  asked for the SMTP AUTH password on the terminal (proposed by
+  Svend Sorensen).
+* When a TERM signal is sent to the SMTP transfer child process, it will
+  abort and save the message to the "dead.letter" file (proposed by
+  Perry Hutchison).
+* Use of the "resend" command with multiple messages at once now works as
+  documented (bug reported by Svend Sorensen).
+* When the "next" or newline command is typed as the first command after a
+  folder has been opened, the first (new) message is printed even if a
+  folder hook has been executed previously (bugreport by Stephen Isard).
+* In combination with OpenSSL, when a SIGPIPE was received on an SSL socket
+  during a call to SSL_read() e.g. because an IMAP connection had timed out,
+  a segmentation fault occurred because OpenSSL apparently cannot handle
+  calls to SSL_shutdown() from the signal handler. This has been fixed (bug
+  reported by Svend Sorensen).
+* Building without socket support works again (Patch by Fernando J. Pereda).
+
+[11.25] released 7/29/05
+* The base64 encoder used an invalid encoding for the last unit of data if
+  (bytes_of_input % 3 == 2); it wrote two encoded bits beyond the last byte
+  then. Most base64 decoders, including nail's own, ignore such bits since
+  base64 data is always a multiple of 8-bit bytes. This might explain why
+  no harm caused by this error has been found for years. (Bug reported by
+  Lukasz Iwaszkiewicz).
+* When a completely cached IMAP message was copied on a server supporting
+  the UIDPLUS IMAP extension and the message had not been printed during
+  the current session yet, the cached entry for the target message contained
+  the message body twice. This bug has been fixed, but cached messages
+  written by previous nail versions may still suffer from this error. To get
+  rid of them, delete them from the IMAP cache directory. The file README in
+  that directory explains its structure.
+* When sending messages, input data that lacks a terminating newline is now
+  always encoded in quoted-printable.
+* Wildcard host names in certificates according to RFC 2595 are now accepted
+  (Bug reported by Svend Sorensen).
+* The new "maximum-unencoded-line-length" variable allows to configure the
+  limit on the line length that causes an ASCII text message to be sent in
+  quoted-printable if exceeded (on request by Greg Cox).
+* Since RFC 2595 allows wildcards at other places than RFC 2818 which is
+  implemented by Mozilla NSS, host name verification is now done separately.
+* The "sort xyz" commands now uncollapse all threads of a previously threaded
+  folder view; messages in collapsed threads were previously not shown when
+  the folder was sorted.
+* The junk mail filter now also ignores the "X-pstn" header fields generated
+  by "postini" filtering software.
+
+[11.24] released 7/14/05
+* When the 'replyto' variable was set, sending a message resulted in a
+  segmentation fault due to a NULL pointer dereference (Bug reported by
+  Nick Pasich).
+* An 'imap-list-depth' variable was introduced to control the maximum depth
+  of the folder traversal for the 'folders' command if the folder separator
+  on the IMAP server is not the slash '/'.
+* If standard output is not a terminal device, the output of the 'folders'
+  command applied to an IMAP account is no longer arranged into columns.
+* The new '-R' option causes all folders to be opened read-only.
+* When the From address was changed with '~H', the value obtained from the
+  'from' variable was still used for the SMTP transfer, for generating the
+  Message-Id, and for S/MIME signing. This has been fixed; the changed
+  address is now used throughout.
+* When reading header fields from a terminal, the input buffer could
+  overflow by one byte (Patch by Ulf Harnhammar).
+* Only applicable if Mozilla NSS is used for SSL support: If the certificate
+  of the server contains a dNSName, NSS ignores the CN. Thus if the CN
+  contains a name that does not also appear as one of the dNSNames, the
+  certificate is rejected. This case is now verified separately in nail,
+  and the certificate is accepted if the CN matches the host name of the
+  server.
+
+[11.23] released 6/28/05
+* The output for the '~p' tilde escape was extended to include the fields
+  implied by the 'from', 'replyto', 'sender', and 'ORGANIZATION' variables
+  (Proposed by Bob Tennent).
+* The 'autocc' and 'autobcc' variables are now evaluated before composition
+  of a message begins. The resulting addresses can thus be edited and viewed
+  using the '~b', '~c', '~h', and '~p' tilde escapes, but changing the values
+  of the 'autocc' and 'autobcc' variables using '~:set' has no effect on the
+  currently composed message anymore.
+* The values of the 'from' and 'replyto' variables can now contain multiple
+  addresses.
+* A 'sender' variable was introduced to set the content of the 'Sender:'
+  field for outgoing messages.
+* A '~H' tilde escape was introduced. It allows to set message-specific values
+  for the 'From', 'Reply-To', 'Sender', and 'Organization' header fields.
+  These fields are now also accepted in the editor output with the
+  'editheaders' variable.
+* The '-r' option now actually disables tilde escapes as documented (Bugreport
+  by Bob Tennent).
+* The INSTALL file now notes that sendmail must support the '-r' option if
+  the '-r' option of nail is used (Issue reported by Attila Zimler and
+  Allan Peda).
+* The 'move' command does not anymore mark messages as moved if writing to
+  an IMAP folder fails.
+* The 'undelete' command now also clears the 'saved' flags of messages that
+  have been moved.
+* Fixed a crash due to a null pointer dereference that occurred when both
+  control and non-ASCII bytes but no NUL bytes were present in a message
+  body and no content type was defined in a mime.types file.
+* The ~F and ~M tilde escapes did not work for interpolating messages with
+  binary attachments anymore since version 11.13 (Bugreport by Tivon Luker).
+* The current message is now shown in the header summary even if it has been
+  killed.
+* The 'kill' command did not operate correctly on 64-bit big-endian machines.
+* A notification is now printed when text is saved to dead.letter.
+* Changing %{prefix} in nail.spec works now for the RPM %install and %files
+  step too (Patch by Allan Peda).
+
+[11.22] released 3/20/05
+* In threaded mode, the thread structure is now shown using line-drawing
+  characters in the header summary. (This looks best on a UTF-8 terminal.)
+* If a message contains both a 'References' and an 'In-Reply-To' header
+  field, 'In-Reply-To' is now preferred for threading and the ',' address.
+* When a message part of content-type text/anything is written with the
+  pipe-type/subtype mechanism, it is now converted to the character encoding
+  of the locale (as it was before 11.14 or so).
+* When using a hostname with a port number attached with SMTP STARTTLS,
+  strip the port number for correct host name verification (Bugreport by
+  Gary E. Rafe).
+
+[11.21] released 2/19/05
+* When mail is sent using SMTP, 'Bcc:' fields are not passed to the
+  server anymore (Bugreport by Matthew Fischer.)
+* When replying to a message part for which a 'pipe-type/subtype'
+  variable was set, quotes were inserted in the text sent to the pipe
+  instead of in the output received from it (since v. 11.14 or so).
+* A message that is already marked as answered is not marked again if
+  it is replied to and the 'markanswered' variable is set.
+* Nail no longer generates an error if renaming a message in a maildir
+  folder fails because both the old and the new link have the same name
+  (i.e. if the rename operation was superfluous).
+* The new 'sendcharsets' variable was incorrectly named 'charsets' in
+  nail.rc in the last version. If nail 11.20 was the first version of
+  nail you ever installed, you should correct this by hand since the
+  file is not overwritten by 'make install'. (Bugreport by Matthew
+  Fischer.)
+* Mozilla NSS error reports are more detailed now.
+* For the 'touch', 'mbox', 'unread', and 'new' commands, a following 'next'
+  command will advance to the next message as if the current one had been
+  printed, as it has been the case with traditional mailx (Bugreport by
+  Michael Sipser).
+* Files in maildir folders are now read in the order obtained from
+  readdir().
+* When the variables 'sign' or 'Sign' are set to the empty string, they
+  are treated as if they had been unset for the '~a' or '~A' commands.
+
+[11.20] released 1/13/05
+* A 'forward-as-attachment' variable has been introduced. If it is set,
+  the 'forward' command uses a MIME 'message/rfc822' attachment for the
+  original message instead of including it in the newly created text.
+* The character set to be used for outgoing messages can now be specified
+  with the 'sendcharsets' variable. It can contain multiple values, with
+  the first appropriate one being used to send the message. The 'charset'
+  variable is still accepted but has been removed from the documentation.
+* If 'sendcharsets' contains more than one character set name, the '~@'
+  tilde escape now asks about character sets for individual attachments
+  if it is invoked without arguments.
+* If neither the 'sendcharsets' nor the 'charset' variable is set, the
+  character set for outgoing messages that contain non-ASCII characters is
+  now 'utf-8' instead of 'iso-8859-1'.
+* When the 'encoding' variable was set to '8bit' and a message contained
+  characters that were not representable in the outgoing character set
+  in its body but not in its header, the characters were replaced by
+  question marks and the message was sent, instead of being rejected
+  (Bugreport by Suresh Ramasubramanian).
+* When sending messages in 8bit, conversions from a multibyte terminal
+  character set failed because multibyte input characters where split
+  across two conversion buffers if they spanned across buffer boundaries.
+* A 'reply-in-same-charset' variable has been introduced. If it is set,
+  nail tries to reply in the character set of the original message first.
+* When the header of an outgoing message contained a non-ASCII character
+  but the body did not, the name of the international character set was
+  used for declaring the content-type of the body too. Us-ascii is now
+  used for the body in such cases.
+* When the 'fullnames' variable was set and the full name of a recipient
+  was the only string in both header and body of an outgoing message that
+  contained non-ASCII characters, no conversion between terminal character
+  set and outgoing character set was performed for it.
+* For files that contain ASCII control characters but no NULs, a 'charset'
+  parameter was erroneusly generated even though these are not 'text/plain'
+  according to MIME.
+* Resolved a symbol conflict with SVR4 systems like Solaris that lead to
+  failed builds because of a redeclaration of 'enum idtype'.
+* When announcing messages after a folder open or a 'newmail' command, a
+  deleted message can no longer become the current message unless all the
+  messages have been deleted. This applies to message deleted by the
+  'folder-hook' mechanism in particular.
+
+[11.19] released 1/2/05
+* A 'chained-junk-tokens' variable was introduced for the Bayesian junk
+  mail filter. If set, the filter considers two-word tokens as described
+  in Jonathan A. Zdziarski's paper 'Advanced Language Classification using
+  Chained Tokens', <http://www.nuclearelephant.com/papers/chained.html>.
+* When running in a UTF-8 locale, unprintable characters are now replaced
+  by Unicode control pictures or the Unicode replacement character when
+  printing to a terminal.
+* The 'show' command now also avoids writing unprintable characters to a
+  terminal. Same for the 'classify' command with the 'verbose' option set.
+* Only MIME-encode words in header fields if they start with '=?' or end
+  with '?=' (instead of encoding any words containing '?', '=', or '_'),
+  and declare them as 'us-ascii' if they do not contain any bytes with the
+  highest bit set (Bugreport by Suresh Ramasubramanian).
+* Fixed a junk mail tokenizer bug which caused the remainder of a message
+  to be ignored if a period occurred at the first position following another
+  token boundary.
+* 'In-Reply-To' fields that refer to multiple message-IDs are now handled;
+  the first matching ID wins for the 'thread' command, and the ',' address
+  selects all referenced messages.
+
+[11.18] released 12/9/04
+* When the 'write' command asks for an attachment filename and a '|' is
+  given as the first character, the attachment is piped to the rest of
+  the string interpreted as a shell command (contributed by Stephen Isard).
+* The ~p escape now includes recipients that are local files in its output
+  (Bugreport by Bob Tennent).
+* The 'ungood' and 'unjunk' commands put the wrong marking on the messages
+  they were applied too (regardless of the database update they performed).
+  'Ungood' now marks a message as being junk, and 'unjunk' clears the junk
+  mark.
+* A 'record-resent' variable has been introduced. If it is set, the 'resend'
+  and 'Resend' commands save messages to the 'record' folder. (Proposed by
+  Bob Tennent.)
+* 'redirect' and 'Redirect' are available as aliases for 'resend' and
+  'Resend', respectively (proposed by Bob Tennent).
+* A 'forward' command has been introduced that behaves more like the
+  forwarding mechanisms of other contemporary mail user agents. Along with
+  it, there are 'fwdignore', 'fwdretain', 'unfwdignore', and 'unfwdretain'
+  commands, and a 'fwdheading' variable. The 'forward' command is probably
+  only useful with a 'fwdretain' command executed before. Such a command is
+  executed by default in /etc/nail.rc for new installations; for other sites,
+  it is recommended that it be added manually.
+* Characters with width 0 (e.g. Unicode combining characters) are now handled
+  correctly in header summaries.
+* When a message in a multibyte character set like UTF-8 that was encoded
+  as quoted-printable was printed and a multibyte character was separated
+  by a '=' continued line, it was not decoded correctly since release 11.14.
+
+[11.17] released 11/18/04
+* When the 'write' command was used to save attachments in releases after
+  11.14, the output file was not properly closed. Since writes to that file
+  are buffered, data was only completely written when nail was quit.
+
+[11.16] released 11/18/04
+* When a header field line that started and ended with a MIME encoded word
+  followed a line that ended with a MIME encoded word, the newline character
+  preceding the next header field was erroneously omitted when a message was
+  displayed since version 11.14.
+* If a header fields contains a MIME encoded word and a large string of
+  ASCII characters at another point, the large string is encoded as multiple
+  encoded words to comply to RFC 2047.
+* The pipe-type/subtype mechanism did not work for MIME contents other than
+  text/anything since release 11.14 (Bugreport by Bob Tennent).
+* When S/MIME support was built using Mozilla NSS, the verification of an
+  encrypted message that had not yet been downloaded from an IMAP or POP3
+  server failed at the first attempt.
+* Previous versions refused to write messages or attachments to /dev/null
+  on some Solaris versions.
+* If the 'from' variable is set to an address that does not contain an '@'
+  character, no (syntactically incorrect) Message-ID is generated anymore.
+
+[11.15] released 11/10/04
+* The compilation process was fixed to work without CPPFLAGS=-D_GNU_SOURCE on
+  Linux/glibc again, although mremap() is not available then. It is therefore
+  recommended to use CPPFLAGS=-D_GNU_SOURCE with Linux/glibc. (Bugreports by
+  Stephen Isard, Laurens Blankers, Bob Tennent.)
+* The handling of interrupts during IMAP and POP3 operations has been revised
+  as discussed on the mailing list. See the NOTES section in the manual page
+  for a description.
+* When an editor is invoked using ~e, ~v, 'edit', or 'visual', interrupts are
+  no longer ignored in its process. With most editor implementations, this
+  does not make any difference since they enable interrupts themselves again;
+  however, traditional implementations of 'ed' do not.
+* The 'forward' command has been renamed to 'resend' for alignment with the
+  terminology of RFC 2822; it is still available under its old name for at
+  least a transition period. Also, 'Resent-From:' and related fields are now
+  prepended to older fields as specified.
+* A 'seen' command has been introduced; it takes a message list and marks the
+  messages as having been read.
+* The semantics of the 'unjunk' command have been changed; it is now exactly
+  the opposite of the 'junk' command and undoes its effects. An 'ungood'
+  command has also been introduced to do the same for a previous 'good'
+  command.
+* Since many versions of Linux do not correctly update the modification time
+  of a file with mmap(), utime() is now called to force an update when the
+  junk mail database is changed.
+* A mbox-style "From " line is now generated when a "message/rfc822" MIME
+  part is printed.
+* The 'multipart/digest' MIME content type is now properly handled.
+* When a malformed MIME multipart message is encountered that contains the
+  boundary string on two immediately following lines, the second line is no
+  longer treated as the begin of a new part.
+* The makeconfig script and the installation instructions now include support
+  for building nail with Mozilla NSS on Solaris.
+* Building IMAP GSSAPI authentication with Heimdal Kerberos libraries works
+  again.
+
+[11.14] released 11/4/04
+* A 'Z' command was introduced. It is similar to the 'z' command, but scrolls
+  only to header groups that contain at least one new or flagged message. This
+  is useful for reading large mailing lists.
+* The attachment decoding functions have been rewritten. As a result, nail is
+  now able to decrypt and display encrypted parts of multipart messages.
+* For MIME messages of type 'multipart/alternative', only the text/plain part
+  is displayed now if one is present with the 'print'-like commands. The
+  'print-alternatives' variable can be set to print all parts, as it was
+  done previously. The 'Print'-like commands always print all parts.
+* The ~F and ~M escapes now cause all parts of MIME multipart messages to be
+  included in the message being composed.
+* A 'show' command was introduced to make the raw MIME-encoded message text
+  visible.
+* Modifications to messages made using the 'edit' and 'visual' commands do
+  no longer cause changes to the current folder. This is the behavior demanded
+  by POSIX.1-2004. MIME decoding and decryption are now performed before each
+  message is passed to the editor. If you prefer the old behavior, set the new
+  'writebackedited' variable.
+* When large amounts of messages were deleted on an IMAP server (or many
+  other STORE commands were generated e.g. because many messages were marked
+  as read), nail sent all of these commands asynchronously. This did slow
+  down operation with some servers and eventually lead to a deadlock after
+  some thousand commands were sent. Nail now waits for server responses in
+  defined intervals. (Bugreport by Stephen Isard.)
+* The handling of read-only compressed mbox format folders was fixed.
+* In version 11.12, fcntl() read locking was erroneously introduced for files
+  other than system mailboxes too. It is now disabled for such files again.
+* If the junk mail database is stored in uncompressed format, mmap() is now
+  used to access it if possible.
+* Recipients that are file names are now removed from the Cc: and Bcc: fields
+  of outgoing mail too, as it was already done for To:.
+* If S/MIME support was built using OpenSSL and an encrypted message was tried
+  to be decrypted without an appropriate private key, nail dumped core due to
+  a NULL pointer dereference. It now fails sanely.
+
+[11.13] released 10/27/04
+* Backslashes outside a quoted command argument are now handled properly.
+* For junk mail detection, the characters '_', '#', '&', and '%' are now
+  considered as word constituents. Also the '/' character is kept if it
+  occurs between digits, and the ';' character if a '&' was previously
+  encountered within the same word.
+* For junk mail detection, fields of MIME part headers are now handled like
+  fields of the main header.
+* For junk mail detection, most HTML tags are now ignored, similar to the
+  proposal in Paul Graham's 'Better Bayesian Filtering'. Also, the top and
+  bottom probabilities are now adjusted to the number of messages used for
+  building the database.
+* When the junk mail database is updated, it is now truncated beyond the
+  last byte just written. Previously, stale data could have remained after
+  this point, which was no problem for nail itself, but could make zcat(1)
+  fail on the file.
+* In the junk mail database, hashes of 56 bits are now used to represent
+  words. A side-effect is that it is possible to test for occurences of
+  given words with a higher certainty.
+* To take advantage of the changes to the junk mail recognition method,
+  you have to delete your junk mail database and have to create it again.
+* The new 'probability' command prints the junk statistics for given words.
+* The 'answered', 'classify, 'draft', 'flag', 'good', 'junk', 'undraft',
+  'unflag', and 'unkill' command now make their argument the current
+  message. This is now also done by the 'score' command unless the new
+  score of the message is negative.
+* Very old versions of OpenSSL are now detected by the configuration script.
+  OpenSSL code will not be included if the version is too old (Bugreport by
+  Thomas Voegtle).
+
+[11.12] released 10/21/04
+* Blank characters between MIME encoded words in header fields are now
+  discarded for display purposes as demanded by RFC 2047.
+* Unless the 'fullnames' variable was set, nail did not generate 'To' header
+  fields when replying to messages since version 11.5 (Bugreport by Bob
+  Tennent).
+* An internal problem in the token scanning for junk mail detection has been
+  fixed; the end of the mail header was not always correctly determined.
+* Special characters in IMAP or POP3 account strings like 'imap://user@host'
+  can now be escaped using URL notation, e.g. 'foo%2Fbar' for 'foo/bar'. It
+  was previously not possible to use these characters. This is a slightly
+  incompatible change as the '%' character must now also be escaped, as
+  '%25'. (Bugreport by Thomas Wolff.)
+* The system mailbox is now locked using fcntl(2) for reading too (Problem
+  reported by Thomas Wolff).
+* When new mail arrives in an IMAP mailbox, the current message is now
+  properly advanced by the 'next' command if it has been printed before.
+* If neither the host name nor the user's email address can be determined,
+  no Message-ID fields are generated.
+* The empty string is now accepted as a message subject for sending.
+
+[11.11] released 10/13/04
+* When sending messages that contain ASCII control characters but neither
+  NULs nor non-ASCII characters, the quoted-printable MIME encoding is now
+  used instead of 7bit.
+* A dangling pointer after a memory reallocation could result in a coredump
+  when the junk mail database was updated by a 'good' or a 'junk' command.
+* The code for accessing the junk mail database has been made more machine-
+  independent. It will not make a difference on most of the platforms on
+  which nail runs. If your compiler does insert padding into C structs that
+  contain only members of type char, you will have to create the junk mail
+  database from scratch again, though.
+
+[11.10] released 10/3/04
+* The creation of quoted-printable encoded MIME data was broken in 11.9.
+* Junk mail filter improvement: Do not ignore single-letter words; extract
+  hostnames from URLs and store them separately.
+
+[11.9] released 10/2/04
+* A Bayesian junk mail filter has been added. See the 'EXAMPLES' section of
+  the manual page for an introduction.
+* Fixed an IMAP response parsing bug which caused nail to hang on messages
+  that contained no text with many IMAP servers.
+* Empty lines within the command lists for account or macro definitions are
+  now ignored.
+* An attempt to define a macro twice is now properly detected and results in
+  an error message.
+* Nail was reported to hang sporadically when sending multipart messages on
+  HP-UX. A possible reason for such problems on systems without /dev/urandom
+  has been eliminated (Bugreport by Patrick Briggs).
+* Fixed a small internal stack buffer overflow that occured regardless of
+  input data and lead to segmentation faults on some platforms when the
+  header summary was printed, depending on the stack layout.
+* Nail now builds without socket (networking) support again.
+* Function declarations and definitions have been converted to ANSI C. This
+  should cause no problems since the code used ANSI C features anyway before.
+
+[11.8] released 9/23/04
+* Support for S/MIME has been added. Introductory documentation is available
+  in the 'EXAMPLES' section of the manual page.
+* It is now possible to use Mozilla NSS instead of OpenSSL for both S/MIME
+  and SSL/TLS. This makes it possible to use Mozilla to manage the certificate
+  databases. See the INSTALL file for futher details. Note to redistributors:
+  The new file nss.c is governed by the Mozilla Public License (MPL), so make
+  sure that you comply to it (or delete that file and do not use NSS).
+* Certificate revocation lists (CRLs) can now be used with S/MIME and SSL/TLS
+  in combination with OpenSSL (for NSS, no special support is necessary).
+* New 'remove' and 'rename' commands for mailboxes are available.
+* Variable names that contain an '@' are now converted to all-lowercase
+  internally. Thus in variable names like disconnected-user@host,
+  imap-auth-user@host, password-user@host, smtp-auth-user@host, the case
+  of the user@host part does not matter anymore.
+
+[11.7] released 9/16/04
+* A collapsed view of message threads was introduced. See the 'collapse'
+  and 'uncollapse' commands, and the 'autocollapse' variable.
+* The 'z' command now always shifts the header summary by a full screen
+  of messages and is not disturbed by deleted, hidden, or killed messages
+  anymore.
+* When an 'account' command was executed and messages were sent to mbox
+  when the old mailbox was quit, the mbox on the new account was used.
+  Messages from the old mailbox now go to the mbox on the old account.
+* Nail did not properly keep the mark for the current message if messages
+  were expunged on an IMAP server.
+* The 'move'/'Move' command now sets the current message to the first
+  undeleted message following the last message it moved, like the 'delete'
+  command.
+* The 'markanswered' variable has been fixed to be effective with the
+  'Reply' command too, and not to mark messages if the reply has been
+  aborted by '~q' or '~x' or if a send error was detected.
+* If the initial connection setup to an IMAP server is interrupted or if
+  authentication fails, folder hooks are no longer executed.
+* If the 'inc'/'newmail' commands were executed on an IMAP connection that
+  was already closed by the server, nail did not catch SIGPIPE properly and
+  was terminated.
+* IMAP or POP3 servers that erroneously send a Unix 'From ' line at the
+  beginning of message headers are now handled gracefully.
+
+[11.6] released 9/7/04
+* An IMAP performance improvement introduced in release 11.5 lead to an
+  inconsistency in the internal states if a command like 'copy' was
+  followed by another command that fetched a message text from the server.
+  Due to an error in the IMAP response parser, this sometimes resulted in
+  core dumps.
+* Support for the 'maildir' folder format was added.
+* The 'account' command was changed; its syntax and semantics are similar
+  to the 'define' command now. This change is downwards compatible, and
+  old 'account' definitions are still accepted.
+* If the account listing generated by the 'account' commands without an
+  argument exceeds the screen height, the pager is invoked now.
+* It is not an error to 'unset' an undefined variable from within a 'call'
+  command or folder hook now.
+* A 'defines' command was added to print the currently defined macros.
+* The header summary that is printed when new mail arrives erroneously
+  included killed messages.
+* When a message in a multibyte character set like UTF-8 that was encoded
+  as quoted-printable was printed and a multibyte character was separated
+  by a '=' continued line, it was not decoded correctly.
+* The '&' addressing mode is now recognized in non-threaded mode too,
+  although it has no special effect then.
+* When the 'thread', 'sort', 'unthread', or 'unsort' commands are called
+  from within a folder hook, they do not print a header summary anymore.
+  Also, the first new message is made the current message correctly now
+  in this situation.
+
+[11.5] released 9/5/04
+***************************************************************************
+* A mailing list has been created to discuss future nail developments and *
+* problem reports. If you like to participate, you can subscribe at       *
+* <https://lists.sourceforge.net/lists/listinfo/nail-devel>. Regardless   *
+* of your subscriber state, bug reports etc. should be sent to the list   *
+* address <nail-devel@lists.sourceforge.net> from now on.                 *
+***************************************************************************
+* A new message addressing mode '(criteria)' is now available. It uses the
+  IMAP SEARCH command if possible, and otherwise performs the equivalent
+  actions locally. This addressing mode is of interest even for those people
+  who do not use IMAP with nail because it adds powerful generic search
+  methods, such as a way to search within message bodies.
+* The 'folders' command now really works with IMAP accounts. It also accepts
+  an argument to list the subfolders of a specific folder.
+* The new 'headline' variable allows to customize the columns in the header
+  summary.
+* The new 'attrlist' variable allows to customize the attributes column in
+  the header summary.
+* The message flags 'Flagged' (F), 'Answered' (A), and 'Draft' (T) are now
+  available, for IMAP mailboxes as well as for local folders. See the 'flag',
+  'unflag', 'answered', 'unanswered', 'draft', and 'undraft' commands and the
+  'markanswered' variable.
+* The 'kill'/'unkill'/'score' commands were added to make messages invisible
+  on the user's wish.
+* It is now possible to define sequences of commands as macros, see the
+  'define', 'call', and 'undef' commands. Macros can also be automatically
+  invoked when a folder is opened using the 'folder-hook' and
+  'folder-hook-fullname' variables.
+* The new 'move' and 'Move' commands mark messages for deletion when they
+  have been successfully transferred to the target folder.
+* The new addressing mode '`' selects all messages that were included in the
+  message list to the previous command.
+* The combination of the previous additions allows a score/filter file to be
+  set up; this is described in the EXAMPLES section of the manual page.
+* New 'noop' command to send NOOP to POP3 or IMAP servers.
+* The IMAP UIDPLUS extension (RFC 2359) is now used if available on the
+  server. It speeds up the IMAP cache when copying messages to IMAP folders;
+  the message is copied directly to the cached target folder then and does
+  not need to be downloaded again when it is accessed there.
+* When an IMAP SELECT command fails and a connection to a folder that is
+  not located on the same server is made afterwards, the connection to
+  the old server is properly terminated now.
+* Command lines like 'nail -A imap -f @mailbox' now work.
+* IMAP or POP3 user names that contain an '@' character, such as 'foo@bar'
+  in 'imap://foo@bar@hostname', are now handled (Bugreport by Lars
+  Kellogg-Stedman).
+* If the 'autoinc'/'newmail' variables are set and new mail arrives in
+  threaded/sorted mode, no summary of old headers is printed anymore.
+* If new mail arrives and messages are expunged on an IMAP server at the same
+  time, all of the new messages are now announced correctly.
+* The 'inc'/'newmail' commands now set the current message to the first new
+  message again. This undoes the change made for version 11.1.
+* When the 'autoinc'/'newmail' variables are set and new mail arrives, the
+  'next' command or enter key prints the next message as usual if the current
+  one has been printed; it printed the current message again in this situation.
+* IMAP performance improvement: When new mail arrives, or when messages have
+  been expunged, metadata is fetched only for the new messages, instead of
+  fetching it for all messages in the folder again as it was done before.
+* IMAP performance improvement: If the header of a message was already
+  fetched from an IMAP server, nail now uses 'BODY.PEEK[TEXT]' when
+  fetching the whole message and does not download it again.
+* IMAP performance improvement: The CLOSE command is now used instead of
+  EXPUNGE when a mailbox is quit.
+* Cached IMAP performance improvement: When a mailbox is opened and messages
+  are cached, their sizes and internal dates are taken from the cache.
+* The wcwidth() library function is now used to determine the width of
+  multibyte characters if it is available.
+* If $MAIL does not exist and 'emptystart' is set, a proper error message
+  is printed now, and a following 'account' command succeeds.
+* The SSL code compiles with older versions of OpenSSL (e.g. 0.9.6b) again
+  (Bugreport by Lutz Horn).
+
+[11.4] released 8/29/04
+* The SSL/X509 DNS name verification code was fixed; it used incorrect code
+  from a book which sometimes caused segmentation faults (Bugreport by Lars
+  Kellogg-Stedman).
+* The 'disconnect' command now accepts an optional message list specifying
+  messages to be read into the IMAP cache before the connection is closed.
+* The new 'cache' command reads a list of messages into the IMAP cache.
+* IMAP BODY.PEEK[] is now used when fetching messages from the server, and
+  the '\Seen' flag is set when the 'quit' command is executed. Thus an
+  'exit' command does not cause messages marked to be read.
+* The 'connect'/'online' commands now announce new messages that are found
+  on the server.
+* The 'replyto' variable can now contain multiple addresses.
+* If the 'sort' command is used without arguments, the current sorting
+  criterion is printed.
+* The 'sort', 'thread', 'unsort', and 'unthread' commands now only print a
+  header summary if the 'header' variable is set.
+* The 'size' command has been fixed to print the full sizes of messages that
+  have not yet been entirely read in IMAP and POP3 folders, instead of the
+  sizes of the already downloaded parts.
+* Deleted messages remained in the cache until an IMAP folder was accessed
+  a second time since 11.3. They are now deleted immediately when a folder
+  is quit in online mode.
+* The configuration system now also checks for iconv() in libiconv if it is
+  not found in one of the standard libraries (Matthias Andree).
+* Specifying LIBS on the make command line does now work with several make
+  implementations of commercial Unices too (Bugreports by Matthias Andree,
+  Matthew Sienkiewicz).
+
+[11.3] released 8/18/04
+* When an IMAP mailbox is opened in threaded/sorted mode and new messages
+  arrive or old ones are deleted, the internal thread structure is now
+  properly rebuilt. The previous failure to do so made nail dump core in
+  most cases.
+* The 'forward' command was fixed; it used an unitialized variable since
+  release 11.2, possibly leading to segmentation faults (Bugreport by Bob
+  Tennent).
+* The behavior of the 'autoinc'/'newmail' variables regarding IMAP folders
+  was changed. If both variables are unset, announcements are printed only
+  if messages have been deleted on the server.
+* The 'new'/'unread' commands now also work with IMAP folders.
+* When a message is deleted or saved in disconnected mode, its cache entry
+  is not removed until the message is actually removed from the server in
+  online mode. This in particular means that saved or 'mbox'ed messages
+  are still available in IMAP inboxes in disconnected mode until they have
+  reached their target folder in online mode.
+* When new messages were received in an IMAP mailbox after messages had
+  been deleted in a previously visited IMAP mailbox, 'Expunged x messages'
+  was erroneously printed.
+
+[11.2] released 8/15/04
+* A message thread-oriented mode is now optionally available; cf. the 'thread'
+  and 'unthread' commands, the 'autothread' variable, and addressing changes.
+* It is also possible to sort messages by various other criteria; cf. the
+  'sort' and 'unsort' commands, the 'autosort' variable, and addressing
+  changes.
+* New 'fullnames' variable: When replying to a message, full names for the
+  recipients are included if it is set, instead of using the plain email
+  address.
+* New commands 'disconnect' and 'connect'/'online' to switch to disconnected
+  IMAP mode and back while retaining the current mailbox.
+* IMAP GSSAPI authentication was implemented; it has been successfully
+  compiled with MIT, Solaris, and HP-UX GSS libraries. See the 'imap-auth'
+  and 'imap-auth-user@host' variables.
+* CRAM-MD5 authentication was implemented for IMAP and SMTP. See the
+  'imap-auth' and 'smtp-auth' variables.
+* POP3 APOP authentication is now supported; see 'pop3-use-apop'.
+* STARTTLS is now also supported for IMAP and POP3; see 'imap-use-starttls'
+  and 'pop3-use-starttls'.
+* Autodetection of the terminal character set works again (did not work since
+  10.8).
+* The 'showlast' variable works again; it had no effect since version 11.0.
+* Made it compile using the HP-UX C compiler again (did not work since 11.0).
+* Standard input is now redirected to /dev/null in the child process that
+  contacts the MTA. A result is that ssl-verify=ask has the same effect as
+  ssl-verify=strict for SMTP servers, and does not put the terminal in an
+  indeterminable state anymore.
+* The initial connection to IMAP or POP3 servers is now made before the
+  previous mailbox (if any) is quit. Thus if a server is unreachable, nail
+  keeps the previous mailbox open instead of getting in a mailbox-less
+  state.
+* Stale cache entries for messages deleted on the server were not removed
+  in some circumstances.
+* The 'inc'/'newmail' commands are now ignored in disconnected mode and no
+  longer display errors about hidden (uncached) messages.
+* The cache now compiles and works on systems that lack fchdir(), such as
+  some Cray machines (Thanks to Cray-Cyber.org).
+* The defaults for /etc/nail.rc have been updated. This will have no effect
+  on existing installations unless the file is copied by hand.
+* Nail does not hang anymore in disconnected mode if a message addressed
+  with ^ or $ is not cached.
+
+[11.1] released 8/8/04
+* IMAP mailboxes can now be cached locally. See the string variable
+  'imap-cache' in the manual page. The cache can also be used for
+  disconnected operation mode, see 'disconnected' and also the '-D'
+  command line option.
+* When nail is notified by the server that messages have been expunged,
+  the user is informed about this condition even if new messages have
+  also arrived.
+* When the group of variables for an 'account' command contains a variable
+  prefixed by 'no...' and the related variable is not set, it is not an
+  error to unset it.
+* The 'headers' command has been made faster when operating on an IMAP
+  mailbox by bundling IMAP requests.
+* When a 'folder' command was executed to change from an uncompressed
+  file to a compressed one, the latter was incorrectly detected as
+  being read-only.
+* Unless one of the 'autoinc' or 'newmail' variables is set, nail does
+  not actively check for new messages in the current IMAP mailbox before
+  each prompt. New messages may nevertheless be detected after any
+  other IMAP command has been issued, so the effect is mostly that
+  not every nail command causes an IMAP command to be sent. Also if
+  'autoinc' or 'newmail' are set to the value "noimap", they are
+  ignored for IMAP mailboxes but still effective for local folders.
+* The 'inc' and 'newmail' commands now use the same method to determine
+  the location of the current message as the 'folder' command does. That
+  means if there has been new mail before that is still unread when newer
+  mail arrives, the older messages are displayed first.
+* Nail does not generate 'Sender:' fields anymore.
+* If OpenSSL is not available, STARTTLS support is not built, and nail
+  compiles again without OpenSSL.
+
+[11.0] released 7/30/04
+* IMAP support has been added. It should considered to be in beta state
+  now, but should not have any disturbing effects on other code unless
+  it is actually used. (So the version jump does not require vendors to
+  continue to ship older releases.)
+  To get started with IMAP, see the manual page for the 'account',
+  'folder', and 'imap' commands, and for the 'folder' variable, as
+  well as the EXAMPLES and NOTES sections.
+* Support for SMTP AUTH LOGIN was added (contributed by John Fawcett).
+* It is now possible to encrypt SMTP with SSL/TLS, using the STARTTLS
+  method as well as with the SMTPS variant.
+* New 'account' command to set groups of variables.
+* Line and column limits (used e.g. for the header summary) are updated
+  when the size of the terminal is changed (handling SIGWINCH).
+* If saving an outgoing message to the folder given in the 'record'
+  variable fails, the message is not sent but put in 'dead.letter'
+  instead. This rarely happens with local record folders, but is of
+  concern if 'record' refers to an IMAP mailbox.
+* For addresses specified with the ~b, ~c, ~h, and ~t tilde escapes
+  or by the 'editheaders' method, if a comma, parenthesis, angle bracket,
+  or quoting character appears, only the comma is accepted as an address
+  separator. Otherwise, whitespace separates addresses as elsewhere. This
+  allows the insertion of comments in recipient addresses and more closely
+  matches the behavior of System V mailx. (Thanks to Ryan Lovett and Hilko
+  Bengen.)
+* An internal version of getopt() is now used to properly work around
+  system defects such as the option reordering on GNU libc based
+  systems. If you really prefer the libc version, remove getopt.o from
+  the list of objects in the Makefile. (Note that nail already worked
+  around the glibc problem, so unless _your_ patches changed its
+  behavior, use the new internal getopt() to remain compatible.)
+* The undocumented facility to pass sendmail options on the command
+  line of nail has been removed because it was not compatible with
+  POSIX and System V. If you need to pass options to sendmail, create
+  a shell script which invokes it appropriately and let the nail
+  variable 'sendmail' point to its location.
+* Fixed the text of some usage messages (thanks to Christian Reiber).
+
+[10.8] released 6/28/04
+* Support for IPv6 is not built by default anymore. There are just too
+  many hosts on which it doesn't work while the IPv4 functions work
+  fine. If you have use for IPv6 support and know that it works, enable
+  it in the Makefile.
+* autoconf and automake are no longer used for building. See the file
+  'INSTALL' which describes the transition of existing build setups.
+* The --enable-all-chars configuration option is no longer available. A
+  run-time nail option variable 'print-all-chars' has been introduced
+  instead.
+* Nail can now handle folders in compressed mbox format. If a file name
+  given on the command line or with the 'folder', 'copy', and 'save'
+  commands ends with '.gz' or '.bz2', gzip(1) or bzip2(1) are executed
+  when reading and writing to it. Likewise, if a folder 'name' does not
+  exist, but either 'name.gz' or 'name.bz2' are found, the compressed
+  folder is used. To make use of compressed folders, just compress the
+  respective mbox format file.
+* If the variable SHELL is not set, the default shell is now /bin/sh
+  instead of csh.
+* If the variable EDITOR is not set, the default editor is now 'ed', as
+  specified by SUSv3.
+* Introduced an 'ssl-verify-user@host' variable as an account-specific
+  variant of 'ssl-verify'.
+* Introduced an 'ssl-method-user@host' variable as an account-specific
+  variant of 'ssl-method'.
+
+[10.7] released 3/19/04
+* The IEEE and The Open Group have granted permission to use parts of
+  the POSIX standard text for the documentation of 'nail'. See the
+  file 'COPYING' for general terms. The manual page has been updated
+  accordingly.
+* If the variable 'sendwait' is set and the mail transfer agent returns
+  a non-zero exit status, the exit status of nail will also be non-zero
+  (Christian Reiber).
+* For the first (textual) part of a multipart message, create a
+  'Content-Disposition: inline' header field to make it clear to other
+  MUAs that this part should be displayed directly (suggested by
+  Alexandros Gougousoudis).
+* Base64 encoded messages were not decoded correctly on machines where
+  the 'char' type is unsigned by default (Fix by Benjamin C. W. Sittler,
+  reported by Hilko Bengen).
+* Any address that contains a '@' character is treated as an internet
+  mail address (even if it contains a '/' character before).
+* Fixed the 'autocc' and 'autobcc' variables to really accept address
+  lists instead of single names.
+* If a message is sent to both addressed recipients and local folders,
+  don't pass the file names with the SMTP client.
+* The ~w command appends the message text to an existing file instead
+  of refusing to write, as POSIX.2 states (Bugreport by Bob Tennent).
+* Escape sequences in quoted arguments to the alias, unset, chdir, cd,
+  source, set, group, ungroup, unalias, file, folder, if, else, endif,
+  alternates, ignore, discard, retain, saveignore, savediscard, saveretain,
+  unignore, unretain, unsaveignore, unsaveretain, shortcut, and unshortcut
+  commands are no longer handled specially. This is for compatibility with
+  System V mailx and POSIX standards.
+* The echo command accepts the same escape sequences as specified for
+  echo(1) in recent Open Group standards.
+* Only the \t and \n sequences are handled for the ~a, ~A and ~i tilde
+  commands and the insertion of the MAILX_HEAD and MAILX_TAIL strings
+  (Thanks to Bob Tennent).
+* Solaris: When the MAILX_TAIL variable was set and a ~p command was
+  issued before the message was sent, parts of the text were sent twice.
+* Introduced a 'hostname' variable to override the value obtained from
+  uname(2) and getaddrinfo(3) (William Bader).
+
+[10.6] released 11/15/03
+* A nested MIME multipart message with a sub-part piped through an external
+  program (such as HTML with w3m) caused nail to abort after SIGPIPE if the
+  PAGER command terminated before reading the whole message.
+* A 'next' command following a 'hold' command displays the next message
+  after the one the 'hold' applies to (Bugreport by Mike Sipser). This 
+  might not be exactly what POSIX specifies, but it makes sense and is
+  consistent with traditional behavior. If you actually favor 'next'
+  not to advance after 'hold', contact me and I'll add a configuration
+  option for this.
+* If the value of the 'record' variable started with an environment
+  variable reference such as '$HOME' or with a tilde and the 'outfolder'
+  variable was set, it was not expanded correctly (Bugreport by Volker
+  Kuhlmann).
+
+[10.5] released 4/27/03
+* A command line argument specifying a To-address can contain multiple
+  recipients separated by commas (Werner Fink).
+* 'showname' variable (based on code contributed by Stephen Isard).
+* Display nonprintable characters in mail addresses as question marks.
+* Fixed MIME encoding of user's From address with respect to quoted
+  characters.
+* 'autobcc' and 'autocc' variables.
+* The effects of the 'bsdcompat' variable are now individually configurable.
+  This introduces the 'bsdflags', 'bsdheadline', 'bsdset', 'bsdannounce',
+  'askatend', 'bsdorder', and 'bsdmsgs' variables.
+* The current message pointer could be garbled when 'newmail' was set and
+  new messages appeared (Fix by Stephen Isard).
+
+[10.4] released 1/19/03
+* A missing #ifdef HAVE_ICONV caused build errors on platforms without
+  iconv() support (J.A. Neitzel, Jens Schleusener, Lars Kellogg-Stedman,
+  Felicia Neff, Chris Pinnock).
+* Extraction of parts from header fields with more than 2560 characters
+  fixed (Lukasz Sznuk, William Cherry).
+* Source archive name in nail.spec corrected (Didar Hussain).
+* Fixed segmentation violation when encountering multipart header fields
+  that contain no ':' character (William Cherry).
+* Respect the 'allnet' variable when comparing strings in message lists.
+* IPv6 support (Jun-ichiro itojun Hagino).
+
+[10.3] released 11/29/02
+* Fixed a buffer overflow that occured with iconv() support disabled (Stan
+  Tobias).
+* MIME encoding of '(non-ASCII-string' comment strings in address fields
+  fixed (non-ASCII-string immediately following the opening parenthesis).
+* Convert header fields to outgoing character set even if the body contains
+  ASCII characters only.
+* Build properly on platforms without socket support (J.A. Neitzel).
+* Don't require towupper() with mbtowc() (J.A. Neitzel). Searches for
+  wide characters in subject fields are not case-insensitive without
+  towupper().
+* Some OpenBSD and NetBSD versions don't adjust the kernel file offset
+  properly after a 'fflush(); rewind()' sequence, violating POSIX.1.
+  This caused empty mails to be sent if the 'record' variable was set.
+  The code now works around the problem (Thanks to J.A. Neitzel).
+* NetBSD lacks gethostent(), causing the configure check for socket
+  support to fail. gethostbyname() is now used instead (Thanks to J.A.
+  Neitzel).
+
+[10.2] released 11/23/02
+* Fixed a NULL pointer dereference that occured if the 'showto' variable
+  was used without the 'alternates' command (Bugreport by Bob Tennent).
+* POP3 client with SSL/TLS support. See the description of the 'folder'
+  command, the 'EXAMPLES' and 'NOTES' sections in the manual page, and
+  the description of the new variables 'password-user@host,
+  'pop3-keepalive', 'ssl-no-default-ca', 'ssl-v2-allow', 'ssl-verify',
+  'ssl-ca-dir', 'ssl-ca-file', 'ssl-cert', 'ssl-cert-user@host',
+  'ssl-key', 'ssl-key-user@host', 'ssl-method', 'ssl-cipher-list'
+  'ssl-rand-egd', 'ssl-rand-file'. You need to execute './configure
+  --with-openssl' to compile with SSL support.
+* Respect assignments to the MAIL variable in startup scripts.
+* Secondary mailboxes with %:folder (see the 'folder' command).
+* 'shortcut' and 'unshortcut' commands.
+* NAIL_EXTRA_RC variable.
+* ',' address (matches the parent of the current message).
+* ';' address (matches the message that was previously the current message).
+* Recognize MIME in header field searches with '/'.
+* The 'save' and 'copy' commands use the mbox file if invoked without
+  an argument.
+* Use wordexp() to expand special characters in filenames if available.
+  $SHELL-specific metacharacters are thus no longer recognized.
+* The output of the 'from' command is piped through the pager if it exceeds
+  the screen height.
+* 'datefield' variable.
+* 'editheaders' variable (contributed by Stephen Isard).
+* '-t' command line option.
+* 'term' condition for 'if' command (contributed by Stephen Isard).
+* Don't prepend a message with a blank line when saving if a blank line 
+  is already present at the end of the file.
+* Fixed quoting for command argument of 'pipe' (Stephen Isard).
+* 'save' and 'copy' commands accept quoted file names with embedded whitespace.
+* Allow '|shell-cmd' (Stephen Isard).
+* 'piperaw' variable (Stephen Isard).
+* If 'askcc' or 'askbcc' are set and 'bsdcompat' is not set, the user is
+  asked for additional recipients before composing the message starts.
+* Don't append an additional newline to filenames in recipient lists.
+* Message lines starting with '>' were truncated by the 'forward' command.
+* Don't rename old Resent-xxx fields when creating new ones.
+* Deletion of attachments with '~@' fixed.
+* Don't mark the saved copy of an unread message as read.
+* Fixed use of a char variable for getc() (Arthur Korn).
+
+[10.1] released 10/14/02
+* POSIX.2 leaves the characters following 'From ' unspecified, so the
+  presence of sender or date strings is no longer required to separate
+  messages in a folder.
+* 'inc' and 'newmail' commands, 'autoinc' and 'newmail' variables.
+* Don't use iconv() if a message contains us-ascii characters only
+  (Problem reported by Thomas Fieseler).
+* Don't report 'Held n messages in mailfile' if n == 0.
+* Don't report a 'Fatal error in process' with '!' unless bsdcompat is set.
+* Missing fflush() caused empty mails with some GNU libc versions to be
+  sent, unless SMTP was used (Problem reported by Thomas Fieseler).
+
+[10.0] released 9/29/02
+* Base64 decoding was calling malloc(0) which caused "Out of memory"
+  errors on some platforms (Bugreport by Stan Tobias).
+* Install nail.rc in the place specified with --with-rcfile (Bugreport by
+  Jeffrey Neitzel)
+* Code cleanup in send.c (Contribution by Stan Tobias).
+* When writing attachment data, the 'w' command will no longer append to
+  a file, but truncate and overwrite it.
+* Extract filenames from obsolete 'Content-Type: ...; name=file' fields (Stan
+  Tobias).
+* Delete directory components from attachment filenames before saving (Fix by
+  Stan Tobias).
+* NAILRC variable (based on a suggestion by Stan Tobias).
+* "bsdcompat" and "prompt" variables; prompt defaults to "? ".
+* "allnet", "debug", "flipr", "outfolder", "sendwait", and "showto" variables
+* "bang" variable. NOTE: Previous versions behaved as if this variable
+   had been set.
+* ~a and ~A tilde escapes with standard semantics.
+* -F command line option, "Mail", "followup", "Followup", "Copy" and "Save"
+  commands.
+  NOTE: This changes the abbreviation of the "folder" command to "fold".
+* "set nofoo" unsets the variable "foo". The variables "nosave" and "noheader"
+  have therefore changed in their positive counterparts and are now set by
+  default.
+* The pg command is now the default pager unless bsdcompat is set.
+* Line and character counts are printed for copy and save commands.
+* MAILX_HEAD and MAILX_TAIL variables.
+* LC_MESSAGES support.
+* -I option prints 'Newsgroups:' field in header summary now. NOTE: The
+  functionality of the old -I option, "interactive", is no longer available
+  as an option. Use something like "env interactive= nail ..." instead. If
+  only tilde escapes in send mode are needed, the new -~ option can be used.
+* The optional name argument in combination with the -f option is now
+  evaluated as a separate operand, not as an argument to -f. This enables
+  usage as "nail -fin name", but "nail -f name -in" is no longer valid.
+* Pipe the output of ~p through the PAGER if the text is long (Bugreport
+  by Stan Tobias).
+* The output format of the "set" command is changed to 'variable="value"'
+  if bsdcompat is not set.
+* Pipe the output of the "set" command through the PAGER if it is long.
+* Headers are not printed automatically after executing a "folder" command
+  if bsdcompat is not set.
+* The "next" command was fixed according to the remark in the POSIX
+  rationale not to skip a message e. g. after "delete".
+* -B, -h and -~ command line options.
+* Lines in message files can now be of arbitrary length and can contain
+  NUL characters.
+* -r disables tilde escapes; -r flag and address is passed to sendmail.
+* followupall, followupsender, replyall, replysender, respondall, and
+  respondsender commands.
+* New, new, and Unread commands (are all aliases to unread command).
+* unalias command implemented (had been documented since 4.4BSD).
+* unignore, unretain, unsaveignore, and unsaveretain commands.
+* If data from standard input contains NUL characters, no character
+  conversions are performed and it is sent in base64 encoding.
+* Non-binary data with long lines is sent in quoted-printable encoding.
+* Fixed segmentation violation when using the "folder" command after
+  an interrupt signal was catched.
+* Resent-Reply-To: header field is no longer generated for conformance
+  with RFC 2822.
+* Fixed -u user option and %user special file name not to ignore 'user'.
+* The 'Reply' command uses the 'Reply-To:' header field in favor of
+  'From:'; the 'reply' command adds recipients given in the 'To:' and
+  'Cc:' fields if a 'Reply-To:' field was present in the message. This
+  means that 'Reply-To:' just overrides 'From:' without a special effect
+  on the 'reply' and 'Reply' commands.
+* When grabbing headers e. g. with the '~h' command, a comma is printed
+  between names if bsdcompat is not set.
+* RPM spec file (contributed by Didar Hussain).
+
+[9.31] released 6/18/02
+* New editing mechanism for attachment list: ~@ tilde escape.
+* The ~a tilde escape is obsoleted by ~@ and has been removed.
+* Header fields starting with =? are only interpreted as RFC 2047 fields
+  if they are entirely valid (Bugreport by Russell Kroll).
+* Sender addresses in message lists (as in 'delete from@host') match only
+  the exact from address.
+* Added ~x tilde escape (abort message composition without saving dead.letter).
+* Fixed recognition of RFC 2045 parameter attributes (Bugreport by Russell
+  Kroll).
+* The "for" command now inserts an intact "Resent-Reply-To:" header field.
+
+[9.30] released 2/20/02
+* Avoid to prepend quote prefix twice when replying to multipart messages.
+* Fixed a problem with empty Content-type fields in multipart messages.
+* Allow name lists for -b and -c command line options (Bugreport by Winfried
+  Szukalski).
+* Added a --with-rcfile option to configure for nail.rc.
+* Added the "showlast" option (Contributed by Jay Nospam).
+* Properly respect TMPDIR; create a new name for each temporary file.
+
+[9.29] released 12/10/01
+* Fixed a SIGPIPE problem concerning the PAGER.
+* Avoid to display parts of next message when encountering masked From lines
+  (Bugreport by Russell Kroll).
+* Implemented pipe-content/subcontent MIME display mechanism (based on a
+  suggestion by Bob Tennent).
+* Respect continued MIME quoted-printable lines in non-text content.
+
+[9.28] released 10/23/01
+* Fixed a crash occuring at unterminated RFC 2047 header parts (Bugreport by
+  Bruno Haible).
+* Fixed a crash that occured when replying to a message with empty subject
+  (Bugreport by Russell Kroll).
+* Send attachments in base64 encoding if a line exceeds 950 characters
+  (Bugreport by Rolf Jakob).
+
+[9.27] released 5/13/01
+* Check addresses when they are entered and drop invalid ones.
+* Supress glibc's getopt(3) argument reordering.
+* Fix handling of last entry on a mime.types file line (bug introduced in 9.24)
+  (Bugreport by Allan Peda).
+* Improved handling of proprietary character set names on SVr4 iconv.
+
+[9.26] released 2/17/01
+* Avoid to prepend or append multiple newline characters to the record folder.
+* Handle unquoted multipart boundaries again (Bugreport by Bob Tennent).
+* Help texts are compiled into the binary. Old files can be deleted (based on
+  a comment by Christian Weisgerber).
+* nail.rc gets installed in /etc and is not overwritten if it exists.
+* Check for iswprint() before using wide character code (Bugreport by
+  Hubertus Krogmann).
+* Use a non-zero exit status if a message could not get formatted in send mode
+  (Bugreport by Allan Peda).
+
+[9.25] released 1/25/01
+* Fixed the problems some people had when viewing multipart messages (Bugreport
+  by Thomas Fieseler and Russell Kroll).
+* Added the -r startup option to specify a From address.
+* Make fallback paths for csh, more, ex and vi configureable (Suggested by
+  Arthur Korn).
+* Remove fcntl lock of mailbox while waiting for dot lock (Problem reported by
+  Arthur Korn).
+
+[9.24] released 1/18/01
+* Use nl_langinfo to get the terminal's character set.
+* Add an In-Reply-To header field in replies.
+* Correct user's mime type file to ~/.mime.types as documented (Bugreport by
+  Allan Peda).
+* Build even if no sendmail installation is detected (Bugreport by Gabor Z.
+  Papp).
+* Adjust string length if an invalid multibyte character was replaced by '?'.
+* Properly display lines that contain an invalid multibyte character sequence.
+* Handle tabulators in MIME headers correctly (Bugreport by Russell Kroll).
+* Drop invalid entries for the References field instead of refusing to send
+  (Bugreport by Bob Tennent).
+* Do not refuse valid domain literals in addresses (Bugreport by Bob Tennent).
+
+[9.23] released 11/15/00
+* Added the ~<! and ~i tilde escapes.
+* Honor the MAILRC environment variable.
+* Added the -e startup option.
+* Do not remove quotes when skinning names.
+
+[9.22] released 2000-09-29
+* Use iconv() and setlocale() only if appropriate header files are found
+  (Problem reported by Gabor Z. Papp)
+* Clean UTF-8 decoding of continued quoted-printable lines
+* Quote base64-encoded texts correctly
+* Never perform RFC 1522 encodings of "Re: " in subject fields
+* Quoted-printable encoder will not generate empty continued lines anymore
+* Do not generate dupes when new mail arrives while old mail is deleted
+  (Bugreport by Bob Tennent)
+* Multipart sections without MIME declaration are correctly handled as text
+
+[9.21] released 2000-08-21
+* Always add a dot to a line that starts with one in SMTP mode.
+* Fixed a core dump that occured on glibc 2.0 if the subject line was empty
+  (Bugreport by Gelu G. Lupas)
+* Removed some (up to now, harmless) namespace conflicts on Solaris.
+* Fixed a problem with isprint() on Solaris (Bugreport by Thomas Fieseler).
+* Support a few iconv naming conventions on Solaris.
+* Corrected charset declaration of 7bit messages.
+
+[9.20] released 2000-08-08
+* Initialize the 'in_quote' variable in mime.c
+* Better mailbox locking.
+* Use LC_CTYPE locale setting to determine printable characters.
+* Use iconv(3) to convert between character sets.
+* Introduced the 'ttycharset' variable.
+* Changed child process handling (Problem reported by Thomas Fieseler).
+* Can handle addresses with embedded comments.
+* Use base64 encoding for header fields containing many 8bit characters.
+* Fixed a bug that could cause too long lines in quoted-printable.
+* Proper handling of newlines at the end of multipart sections.
+
+[9.14] released 2000-06-26
+* Generate `User-Agent:' header fields instead of `X-Mailer:'
+* Addresses in SMTP commands are surrounded with angle brackets
+* Do not send an empty envelope From if using SMTP without given `from' (Problem
+  reported by Gabor Z. Papp)
+* Add a From: line even without a given `from' variable if using SMTP
+* Removed wrong structure reference in tty.c (Bugreport by Steve Harris)
+* Interpret all commands beginning with `#' as comments (Suggested by
+  Gabor Z. Papp and Steve Harris)
+* Insert an empty line after `xyz wrote:' in replies
+* Fixed a possible buffer overflow in address allocation routines (Bugreport
+  by James Sneeringer)
+* The `z' command now accepts a number that specifies a window
+
+[9.13] released 2000-05-30
+* Changed _PATH_ to PATH_ in defines
+* Fixed RFC 1522 encoding of header fields (important!) (Bugreport by Bob
+  Tennent)
+* Check syntax of addresses before sending
+
+[9.12] released 2000-05-29
+* Do not print the indentprefix if a line to quote is being continued
+  in quoted-printable
+* Omit the "No mail for ..." message if variable `emptystart' is set
+* Implemented handling of message/rfc822 format
+* Added SMTP client code
+* Added the `Forward' command
+* Avoid doubling line breaks when printing long addresses in header
+
+[9.11] released 2000-05-15
+* Do a fflush() before executing a ~| command (Bugreport by Edward V. Popkov)
+* Make a backup copy of an already installed nail.rc file (problem reported
+  by Gabor Z. Papp)
+* The `write' command has a more consistent user interface
+* Added the `forward' command (Suggested by Bob Tennent)
+* Added the `emptystart' option
+
+[9.10] released 2000-05-02
+* Added the `-q' option
+* Convert a subject given on the command line from RFC 1522 format
+* The variable `srbuf' is now of type sigjmp_buf (Bugreport by Edward
+  V. Popkov)
+* Introduced GNU autoconf support (Contributed by Jacob Moorman)
+* Corrected RFC1522-encoding of headers to respect word boundaries
+* Use gethostbyname() to include the FQDN in message ids
+* Use base36 to get shorter message ids and multipart boundaries
+* Use data from /dev/urandom in message ids and boundaries if available
+* Added the `pipe' command (Suggested by Bob Tennent)
+* readline() should no longer fail if libsafe is used (Bugreport by Bob
+  Tennent)
+* Added the `-V' option
+* Limit the `References' header field to 21 entries
+
+[9.04] released 2000-04-17
+* Some fixes for machines where chars are unsigned by default (Bugreport by
+  Marcel Oliver)
+* Merged the Mail.1 and nail.1 manual pages and added some missing
+  features from `The Mail Reference Manual'
+* Print attachment names correctly in ~p escape
+* Use sprintf() if snprintf() is not available
+
+[9.03] released 2000-04-11
+* Some fixes to compile on FreeBSD 4.0 (Thanks to Anders Andersson)
+* Check for write permission before dot-locking mail files (Bugreport by Bob
+  Tennent)
+* Do not accept an attachment list with unreadable files (Bugreport by Bob
+  Tennent)
+* Do not send a message if a file could not get attached or if the input could
+  not get read; save dead.letter instead (Bugreport by Bob Tennent)
+* Do not include Linux domainnames in the message id anymore
+* Merged the Red Hat nopanic and nullchar patches (Thanks to Bob Tennent)
+* Include a signature file if option `signature' is set
+* Generate our own `Date:' header field for better local message archiving
+* Made the `quote' option configurable (Suggested by Bob Tennent)
+* Fixed segfault if a message to reply to had no message id
+* Removed all `register' declarations of variables
+* The code is intended to be POSIX.1 compatible now, except for the
+  tempnam() and getopt() functions the system must provide in addition
+* Removed the base64 encoding option for texts
+* Perform CRLF translation when decoding base64
+* Added the `emptybox' variable
+* Splitted send.c to sendout.c
+
+[9.02] relased 2000-04-05
+* Include the domainname in the message id only if there is one
+* Added the `stealthmua' option (based on a suggestion by Gabor Z. Papp)
+* Fixed decoding of base64 when lines are not multiples of 4 characters
+* Fixed erroneous recognition of message boundaries
+* Whitespace at the end of a line is now encoded in quoted-printable
+
+[9.01] released 2000-03-25
+* Added the `Organization:' stuff
+* Handle unknown encodings as application/octet stream for MIME conformance
+* Generate a `Reference:' header line in replies
+* Handle addresses in the `from' and `replyto' variables as if they were in
+  the alternates list
+* Added a message count to the generated message-id to ensure it is unique
+  even when more than one message is sent per second
+* Mbox format: Mask `^From ' lines inside messages with '>'
+* Proper handling of nested multipart messages implemented
+* We now ignore the MIME-Version header field and look at the Content-Type
+  field instead
+* Can now compile on SVR4 systems using -lucb
+* Changed generation of multipart boundaries
+* Sending MIME messages to files now works
+* Fixed core dump if variable `encoding' was unset (Bugreport by Alexander
+  Shelkovich)
+
+[9.0] released 2000-03-20
+* Initial release

@@ -1,0 +1,153 @@
+Welcome to Heirloom mailx!
+==========================
+
+Mailx is derived from Berkeley Mail and is intended provide the
+functionality of the POSIX mailx command with additional support
+for MIME, IMAP, POP3, SMTP, and S/MIME. It provides enhanced
+features for interactive use, such as caching and disconnected
+operation for IMAP, message threading, scoring, and filtering.
+It is also usable as a mail batch language, both for sending
+and receiving mail.
+
+Until March 2006, this project has been developed under the
+name "nail"; it is integrated into the Heirloom project now.
+The old name will persist at some places. If you were calling
+the program under the name "nail" and want to continue to do
+so, create a symbolic link to the mailx binary.
+
+New releases of mailx are announced on Freshmeat. If you want to get
+notified by email on each release, use their subscription service at
+<http://freshmeat.net/projects/mailx/>.
+
+The project homepage is currently at
+<http://heirloom.sourceforge.net/mailx.html>.
+
+
+How to build
+============
+
+To compile and install mailx, look at the file 'INSTALL'. You can also
+build mailx RPMs using 'rpmbuild -tb mailx-<version>.tar.bz2'.
+
+You should always install the template for the system-wide configuration
+file. If this is not possible because you lack the necessary permissions,
+integrate its contents into your ~/.mailrc. This is because some of the
+built-in defaults are not appropriate anymore for the Unix platforms of
+today, but are still being kept for compatibility.
+
+Mailx has been built successfully in the following environments using
+the current configuration system:
+
+Linux               Kernel 2.0 and above; libc4, libc5, glibc 2.2 and above,
+                    diet libc, uClibc; gcc, Intel C
+Sun Solaris         2.6 and above; Sun C, gcc
+Open UNIX           8.0.0
+FreeBSD             4.9 and above
+HP HP-UX            B.11.11, B.11.23; HP C/ANSI C, gcc
+HP Tru64 UNIX       4.0G, 5.1B; Developers' Toolkit C, gcc
+NetBSD              1.6, 2.0
+IBM AIX             5.1; VisualAge C, gcc
+Cray UNICOS         9.0.2.2
+Control Data EP/IX  2.2.1AA; /svr4/bin/cc
+OpenBSD             3.3
+Apple Darwin        6.8
+Apple Mac OS X      10.2 Server
+NEC UX/4800         Release11.5 Rev.A
+NEC SUPER-UX        10.2
+DragonFlyBSD        1.3.7-DEVELOPMENT
+
+If your system does not appear in this list, just try it out. Whether
+it works or not, you should contact the development list and report the
+results.
+
+But note that I strongly discourage from porting mailx to Windows
+and environments that make Windows look Unix-like; I won't accept any
+patches or suggestions that go in this direction. There are two major
+reasons for this: First, any port makes maintaining harder; there are
+always more work-arounds in the source, and introducing new features
+involves the question whether they will work an all supported platforms.
+The more different a platform behaves from, let's say, the common Unix
+way, the more hacks have to be made, costing human time that could
+otherwise have been used to enhance the software for Unix platforms.
+Windows is just not worth this, and here we are at the second point:
+Porting software to Windows encourages people to use -- that is: to buy
+-- Windows. It supports a company that is known to threaten Open Source
+software like mailx. In short, porting mailx (or similar free software)
+to Windows has an ill effect on that software. Don't do it.
+
+Note that my statement doesn't legally restrict you if you want to port
+mailx to any platform. This would not be the way of free software either,
+especially since I might be wrong in the future; as an example, porting
+free software to mainframes of a certain company is considered a good
+thing today. I just wish to express my opinion as a free software
+developer, and to inform you that I don't maintain such a port.
+
+
+Mailbox formats
+===============
+
+Mailx supports the mbox and maildir mailbox formats.
+
+The mbox format variant based on the 'Content-Length:' header field that
+is used on most SVr4 systems by default is not supported by mailx. As this
+format generally is a design flaw, you should fix your system by either
+using procmail for local mail delivery, which is a good idea anyway, or
+at least add the -E flag to the Mlocal line in /etc/sendmail.cf if using
+/usr/lib/mail.local.
+
+Although it is not bad, just obsolete, similar considerations apply
+to the MMDF format used on OpenServer systems; unless you switch to
+procmail (or contribute support for this format), mailx will not be
+able to read your mailbox there.
+
+
+Questions, suggestions, bug reports
+===================================
+
+Please use the 'nail-devel' mailing list for questions, suggestions,
+or bug reports. This has at least three advantages over contacting me
+directly:
+
+1. Other people can comment on the issue. They might have solved a similar
+   problem, or might be willing to implement improvements.
+
+2. Since all posts are archived, a problem needs to be commented once only,
+   and the answers are readily available on the web then.
+
+3. Unless you had an acceptable reason to contact me directly, I will refuse
+   to give you technical answers by personal mail. Thus if you ignore this
+   advice, you will just have to resend your message to the list.
+
+Also before you send something to the list, make sure that you did the
+following:
+
+1. Check out that you are using a binary made from pristine sources of the
+   latest release. This is particularly important if you received your mailx
+   binaries from a third-party vendor. If you are unwilling to do this for
+   whatever reason, use the support channels of your vendor and avoid abusing
+   the Open Source development model.
+
+2. Check that your issue is not already solved or commented in the existing
+   documentation. This does not only involve reading this file; you also
+   need to look at the manual page and the ChangeLog. After doing that, you
+   need to search the mailing list archive for related topics. Remember that
+   you are spending other people's spare time when you ask questions, and
+   that you just waste it if your question was a superfluous one.
+
+3. If you are reporting a bug, try to reproduce it and include detailed
+   instructions for doing that in your report. If you cannot reproduce the
+   bug, document carefully what you have done before the problem occurred.
+   The more information you provide, the greater are the chances that the
+   bug can be fixed quickly.
+
+Both the contact instructions and the list archive are available at
+<https://lists.sourceforge.net/lists/listinfo/nail-devel>. You need
+to subscribe in order to post to the list.
+
+
+Enjoy!
+
+Gunnar Ritter
+Freiburg i. Br.
+Germany
+<gunnarr@acm.org>                                                 01/03/07

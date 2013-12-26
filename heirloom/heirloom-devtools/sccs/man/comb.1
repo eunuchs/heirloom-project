@@ -1,0 +1,117 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 1999, Sun Microsystems, Inc.
+.\"
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)comb.1	1.9 (gritter) 3/23/07
+.\"
+.\" from OpenSolaris sccs-comb 1 "1 Nov 1999" "SunOS 5.11" "User Commands"
+.TH COMB 1 "3/23/07" "Heirloom Development Tools" "User Commands"
+.SH NAME
+comb \- combine SCCS deltas
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBcomb\fR
+[\fB\-o\fR]
+[\fB\-s\fR]
+[\fB\-p\fR\fIsid\fR]
+[\fB\-c\fR\fIsid-list\fR]
+\fIs.filename\fR...
+.br
+.ad b
+.hy 1
+.SH DESCRIPTION
+\fIcomb\fR generates a shell script (see 
+\fIsh\fR(1))
+that you can use to reconstruct the indicated \fBs.\fRfiles.
+This script is written to the standard output.
+.PP
+If a directory name is used in place of the \fIs.filename\fR argument, the \fIcomb\fR command applies to
+all \fBs.\fRfiles in that directory.
+Unreadable \fBs.\fRfiles produce an error; processing continues with the next file
+(if any).
+The use of `\fB\(mi\fR' as the \fIs.filename\fR argument indicates that the names of files are to be read
+from the standard input, one \fBs.\fRfile per line.
+.PP
+If no options are specified, \fIcomb\fR preserves only
+the most recent (leaf) delta in a branch, and the minimal number of ancestors
+needed to preserve the history.
+.TP
+\fB\-o\fR
+For each `\fBget \fR\fB\-e\fR'
+generated, access the reconstructed file at the release of the delta to
+be created.
+Otherwise, the reconstructed file is accessed at the most recent
+ancestor.
+The use of \fB\-o\fR may decrease the size of the reconstructed \fBs.\fRfile.
+It may also alter the shape of the delta tree of the original
+file.
+.TP
+\fB\-s\fR
+Generate scripts
+to gather statistics, rather than combining deltas.
+When run, the shell
+scripts report: the file name, size (in blocks) after combining, original
+size (also in blocks), and the percentage size change, computed by the formula: 
+.sp
+100 * ( \fIoriginal\fR\fB \(mi \fR\fIcombined\fR\fB ) / \fR\fIoriginal\fR\fB\fR
+.sp
+This option can be used to calculate the space that will be saved,
+before actually doing the combining.
+.TP
+\fB\-p\fR\fISID\fR
+The \s-1SID\s+1 of the oldest delta
+to be preserved.
+.TP
+\fB\-c\fR\fIsid-list\fR
+Include the indicated list of deltas.
+All other deltas
+are omitted.
+\fIsid-list\fR is a comma-separated list
+of \s-1SCCS\s+1 delta \s-1IDs\s+1 (SIDs).
+To specify a range of deltas, use a `\fB\(mi\fR' separator instead of a comma, between two \fBSIDs\fR in the list.
+.SH FILES
+.PD 0
+.TP 14
+\fBs.\|COMB\fR
+reconstructed \s-1SCCS\s+1 file
+.TP
+\fBcomb?????\fR
+temporary file
+.PD
+.SH SEE ALSO
+admin(1), 
+delta(1), 
+help(1), 
+prs(1), 
+sh(1),
+sccsfile(5)
+.SH DIAGNOSTICS
+.LP
+Use the \s-1SCCS\s+1 \fIhelp\fR
+command for explanations (see 
+\fIhelp\fR(1)).
+.SH NOTES
+\fIcomb\fR may rearrange the shape of the tree of deltas.
+It may not save any space; in fact, it is possible for the reconstructed
+file to actually be larger than the original.

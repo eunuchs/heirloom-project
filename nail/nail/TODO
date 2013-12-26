@@ -1,0 +1,65 @@
+Before you start making additions to mailx, subscribe to the development
+mailing list at <https://lists.sourceforge.net/lists/listinfo/nail-devel>
+to coordinate your efforts with the maintainer and other people.
+
+------------------------------------------------------------------------
+The following features are missing for conformance with the Single Unix
+Specification, v.3:
+
+* LC_TIME environment. This conflicts with the mail RFCs and historical
+  usage. It was optional POSIX.2, but the newer standards mention this
+  in the rationale only. Won't be implemented here.
+
+* onehop variable (not demanded by POSIX standards). Seems absolutely
+  obsolete. If anybody has a need for it, he should contribute code.
+
+------------------------------------------------------------------------
+The following IMAP features could be implemented in the future. If you
+need them and cannot wait, contribute code.
+
+- The MIME capabilities of IMAP could be used so that not entire messages
+  are downloaded all the time, but just the parts that are actually needed.
+
+- SASL authentication methods could be implemented.
+
+- The deletion code (more general, all STORE code) should be able to
+  generate requests for ranges of messages to speed up operation.
+
+- Large messages should be transferred in separate parts with IMAP so
+  that the operation can be interrupted in between.
+
+------------------------------------------------------------------------
+
+The POP3 client supports USER/PASS and APOP authentications only. If you
+need other authentication methods and have the ability to test them,
+please write and contribute code.
+
+A variable should be added to specify the default character set for
+messages without MIME declarations.
+
+If you want to edit arbitrary header fields with the 'editheaders'
+option, you are invited to supply code for it. Be warned that this
+is a nontrivial task due to MIME. Contact the development mailing
+list before you start coding.
+
+Several people have suggested adding support for arrow keys at the
+command prompt, autocompletion for attachment filenames, etc. I am
+personally not going to implement this as X Window Copy-and-Paste
+satisfies me. But if you desparately need it, you're invited to
+contribute code. You can't use libreadline, though, because its
+license is incompatible, and I insist that your implementation
+is done in a way that a) mailx can still be compiled without
+requiring any further libraries (i. e. your code is optional)
+and b) your code works for all kinds of terminals, not just
+VT100/ANSI ones.
+
+Mailx will not support 'Return-Receipt-To' or 'Disposition-Notification-To'
+header fields, neither for the sending nor for the receiving part.
+For the sending part it plainly doesn't work because one wants to
+know whether the human recipient has read the mail and not if he
+clicked on some send-a-receipt-button while looking out of the
+window. For the receiving part, it is simply annoying. If you want
+a confirmation, ask the recipient to send one in the body of the
+message.
+
+	Gunnar Ritter					3/4/06

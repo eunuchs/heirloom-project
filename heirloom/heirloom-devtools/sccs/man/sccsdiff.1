@@ -1,0 +1,73 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2001, Sun Microsystems, Inc.
+.\"
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)sccsdiff.1	1.7 (gritter) 2/1/07
+.\"
+.\" from OpenSolaris sccs-sccsdiff 1 "28 Sep 2001" "SunOS 5.11" "User Commands"
+.TH SCCSDIFF 1 "2/1/07" "Heirloom Development Tools" "User Commands"
+.SH NAME
+sccsdiff \- compare two versions of an SCCS file
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBsccsdiff\fR [\fB\-p\fR]
+\fB\-r\fR\fIsid\fR \fB\-r\fR\fIsid\fR [\fIdiff-options\fR] \fIs.filename\fR
+.br
+.ad b
+.hy 1
+.SH DESCRIPTION
+.LP
+\fIsccsdiff\fR compares two versions of an \s-1SCCS\s+1 file and displays the differences between the two versions.
+Any number of \s-1SCCS\s+1 files may be specified.
+The options specified apply to all named \fBs.\fRfiles.
+.TP 20
+\fB\-p\fR
+Pipe output for each file through 
+\fBpr\fR(1).
+.TP
+\fB\-r\fR\fIsid\fR
+Specify a version corresponding to the indicated \s-1SCCS\s+1 delta \s-1ID\s+1 (SID) for comparison.
+Versions are passed to 
+\fIdiff\fR(1) in the order given.
+.TP
+\fB\fIdiff-options\fR
+Pass options to 
+\fIdiff\fR(1), including: \fB\-b\fR, \fB\-c\fR, \fB\-e\fR, \fB\-f\fR, \fB\-h\fR, \fB\-u\fR, \fB\-C\fR \fInumber\fR, \fB\-U\fR \fInumber\fR, and \fB\-D\fR \fIstring\fR.
+.SH FILES
+.TP 16
+\fB/tmp/get?????\fR
+temporary files
+.SH SEE ALSO
+diff(1), 
+get(1), 
+help(1), 
+pr(1)
+.SH DIAGNOSTICS
+.TP
+\fB\fIfilename\fR\fB: No differences\fR
+If the two versions are the same.
+.PP
+Use the \s-1SCCS\s+1 \fIhelp\fR command for explanations of other messages.
+See 
+\fIhelp\fR(1).

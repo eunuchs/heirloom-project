@@ -1,0 +1,407 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 2006, Sun Microsystems, Inc. All Rights Reserved
+.\" Copyright 1989 AT&T
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)pkgadd.1m	1.9 (gritter) 2/26/07
+.\"
+.\" from OpenSolaris pkgadd 1M "26 Jul 2006" "SunOS 5.11" "System Administration Commands"
+.TH PKGADD 1M "2/26/07" "Heirloom Packaging Tools" "System Administration Commands"
+.SH NAME
+pkgadd \- transfer software packages to the system
+.SH SYNOPSIS
+.HP
+.PD 0
+.ad l
+.nh
+\fBpkgadd\fR [\fB\-nv\fR]
+.\" [\fB\-a\fR \fIadmin\fR]
+.\" [\fB\-G\fR] [\fB\-x\fR \fIproxy\fR]
+.\"[ [\fB\-M\fR] \fB\-R\fR \fIroot_path\fR]
+[\fB\-R\fR \fIroot_path\fR]
+[\fB\-r\fR \fIresponse\fR]
+.\" [\fB\-k\fR \fIkeystore\fR] [\fB\-P\fR \fIpasswd\fR]
+.\" [\fB\-V\fR \fIfs_file\fR]
+[\fB\-d\fR \fIdevice\fR | \fB\-d\fR \fIdatastream\fR \fIpkginst\fR | all]
+[\fIpkginst\fR | \fB\-Y\fR \fIcategory\fR [\fI, category\fR]...]
+.HP
+.PD 0
+.ad l
+\fBpkgadd\fR \fB\-s\fR [\fB\-d\fR \fIdevice\fR | \fB\-d\fR \fIdatastream\fR \fIpkginst\fR | all]
+[\fIpkginst\fR | \fB\-Y\fR \fIcategory\fR [\fI, category\fR]...]
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+\fBpkgadd\fR transfers the contents of a software package from the distribution medium or directory to install it onto the system.
+Used without the \fB\-d\fR \fIdevice\fR source specifier, \fBpkgadd\fR looks in the default spool directory (\fB/var/spool/pkg\fR) for the package.
+Used with the \fB\-s\fR option, it writes the package to a spool directory instead of installing it.
+.PP
+The \fBpkgadd\fR utility requires an amount of temporary space the size of the package that is being installed.
+\fBpkgadd\fR determines which temporary directory to use by checking for the existance of the $TMPDIR environment variable.
+If $TMPDIR
+is not defined,
+\fBpkgadd\fR uses
+.\"\fBP_tmpdir\fR from \fBstdio.h\fR.
+.\"\fBP_tmpdir\fR has a default of
+\fB/var/tmp/\fR.
+.PP
+Certain unbundled and third-party packages are no longer entirely compatible with the latest version of \fBpkgadd\fR.
+These packages require user interaction throughout the installation and not just at the very beginning, or require that their request scripts be run as the root user.
+.PP
+To install these older packages\c
+.\" (released prior to Solaris 2.4)
+, set the following environment variable: \fBNONABI_SCRIPTS=TRUE\fR.
+.PP
+As long as this environment variable is set, \fBpkgadd\fR permits keyboard interaction throughout the installation and package request scripts are run as \fBroot\fR.
+.ig
+.PP
+If you have package request scripts that require running as user \fBroot\fR
+(instead of
+.\"\fBnoaccess\fR
+\fBnobody\fR
+[the default] or user \fBinstall\fR),
+use the \fBrscript_alt\fR parameter in the
+.IR admin (5)
+file to make an appropriate selection.
+See
+.IR admin (5).
+.PP
+Note that, in Solaris 8 and Solaris 9, the default user when running a request script was either \fBroot\fR or \fBnobody\fR, depending on the operating system's patch level.
+In the current release, the default user is \fBnoaccess\fR.
+.PP
+When running \fBpkgadd\fR in the global zone (see
+.IR zones (5)),
+a package that contains a request script (see
+.IR pkgask (1M))
+is added only to the global zone.
+The package is not propagated to any current or yet-to-be-installed non-global zone.
+This behavior mimics the effect of the \fB\-G\fR option, described below.
+..
+.ig
+.TP 10
+\fB\-a\fR \fIadmin\fR
+Define an installation administration file, \fIadmin\fR, to be used in place of the default administration file.
+The token \fBnone\fR overrides
+the use of any \fIadmin\fR file, and thus forces interaction with the user.
+Unless a full path name is given, \fBpkgadd\fR first looks in the current working directory for the administration file.
+If the specified administration file is not in the current working directory, \fBpkgadd\fR looks in the \fB/var/sadm/install/admin\fR directory for the administration file.
+..
+.ig
+.TP 10
+.B \-G
+Add package(s) in the current zone only.
+When used in the global zone, the package is added to the global zone only and is not propagated to any existing or yet-to-be-created non-global zone.
+When used in a non-global zone, the package(s) are
+added to the non-global zone only.
+.IP
+This option causes package installation to fail if, in the \fBpkginfo\fR file for a package, \fBSUNW_PKG_ALLZONES\fR is set to true.
+See
+.IR pkginfo (5).
+.TP
+\fB\-k\fR \fIkeystore\fR
+Use \fIkeystore\fR as the location from which to get trusted certificate authority certificates when verifying digital signatures found in packages.
+If no keystore is specified, then the
+default keystore locations are searched for valid trusted certificates.
+See \fBKEYSTORE LOCATIONS\fR for more information.
+.TP
+.B \-M
+Instruct \fBpkgadd\fR not to use the \fB$\fR\fIroot_path\fR\fB/etc/vfstab\fR file for determining the client's mount points.
+This option assumes the mount points are correct on the
+server and it behaves consistently with Solaris 2.5 and earlier releases.
+..
+.TP 10
+.B \-n
+Installation occurs in non-interactive mode.
+Suppress output of the list of installed files.
+The default mode is interactive.
+.ig
+.TP
+\fB\-P\fR \fIpasswd\fR
+Password to use to decrypt keystore specified with \fB\-k\fR, if required.
+See \fBPASS PHRASE ARGUMENTS\fR for more information about the format of this option's argument.
+..
+.TP
+\fB\-r\fR \fIresponse\fR
+Identify a file or directory which contains output from a previous
+.IR pkgask (1M)
+session.
+This file supplies the interaction responses that would be requested by the package in interactive mode.
+\fIresponse\fR must be a full pathname.
+.TP
+\fB\-R\fR \fIroot_path\fR
+Define the full path name of a directory to use as the \fIroot_path\fR.
+All files, including package system information files, are relocated to a directory tree starting in the specified \fIroot_path\fR.
+The \fIroot_path\fR may be specified when installing to a client from a server (for example, \fB/export/root/client1\fR).
+.ig
+.IP
+Note: The root file system of any non-global zones must not be referenced with the \fB\-R\fR option.
+Doing so might damage the global zone's file system, might compromise the security of the global zone, and might damage the non-global zone's file system.
+See
+.IR zones (5).
+..
+.TP
+\fB\-s\fR \fIspool\fR
+Write the package into the directory \fIspool\fR instead of installing it.
+.TP
+.B \-v
+Trace all of the scripts that get executed by \fBpkgadd\fR, located in the \fIpkginst\fR\fB/install\fR directory.
+This option is used for debugging the procedural and non-procedural scripts.
+.ig
+.TP
+\fB\-V\fR \fIfs_file\fR
+Specify an alternative \fIfs_file\fR to map the client's file systems.
+For example, used in situations where the \fB$\fR\fIroot_path\fR\fB/etc/vfstab\fR file is non-existent or unreliable.
+.TP
+\fB\-x\fR \fIproxy\fR
+Specify a HTTP[S] proxy to use when downloading packages The format of proxy is \fIhost\fR:\fIport\fR, where \fIhost\fR is the hostname of the HTTP[S]
+proxy, and \fIport\fR is the port number associated with the proxy.
+This switch overrides all other methods of specifying a proxy.
+See ENVIRONMENT VARIABLES for more information on alternate methods of specifying a default proxy.
+.IP
+When executed without options or operands, \fBpkgadd\fR uses \fB/var/spool/pkg\fR (the default spool directory).
+..
+.TP 10
+\fB\-d\fR \fIdevice\fR
+By default, pkgadd looks in the \fB/var/spool/pkg\fR directory when searching for instances of a package to install or spool.
+Optionally, the source for the package instances to be installed or spooled can be specified:
+Install or copy a package from \fIdevice\fR.
+\fIdevice\fR can be any of the following:
+.RS
+.TP
+\(bu
+A full path name to a directory or the identifiers for tape, floppy disk, or removable disk (for example, \fB/var/tmp\fR or \fB/floppy/\fIfloppy_name\fR).
+.TP
+\(bu
+A device alias (for example, \fB/floppy/floppy0\fR).
+.TP
+\(bu
+A datastream created by \fBpkgtrans\fR (see
+.IR pkgtrans (1)).
+.ig
+.TP
+\(bu
+A URL pointing to a datastream created by \fBpkgtrans\fR.
+The supported Universal Resource Identifiers (URIs) are \fBhttp:\fR and \fBhttps:\fR.
+..
+.RE
+.TP 10
+\fB\-d\fR \fIdatastream\fR \fIpkgname\fR,... | \fBall\fR
+The second form of the \fB\-d\fR specifier, above, indicates the syntax you use when specifying a datastream.
+In this case you must specify either a comma-separated list of package names or the keyword \fBall\fR.
+.SS Instances
+By default, \fBpkgadd\fR searches the specified source, and presents an interactive menu allowing the user to select which package instances found on the source are to be installed.
+As an alternative, the package instances to be installed can be specified using:
+.TP 10
+\fB\fIpkginst\fR
+The package instance or list of instances to be installed.
+The token \fBall\fR may be used to refer to all packages available on the source medium.
+The format \fIpkginst\fR\fB\&.*\fR can be used to indicate all instances of a package.
+.IP
+The asterisk character (\fB*\fR) is a special character to some shells and may need to be escaped.
+In the C-Shell, the asterisk must be surrounded by single quotes (\fB'\fR) or preceded by a backslash (\fB\e\fR).
+.TP
+\fB\-Y\fR \fIcategory\fR[,\fIcategory\fR...]\fR
+Install packages based on the value of the \fBCATEGORY\fR parameter stored in the package's
+.IR pkginfo (5)
+file.
+All packages on the source medium whose \fBCATEGORY\fR matches one of the specified categories will be selected for installation or spooling.
+.ig
+.SH KEYSTORE LOCATIONS
+Package and patch tools such as \fBpkgadd\fR or \fBpatchadd\fR use a set of trusted certificates to perform signature validation on any signatures found within the packages or patches.
+If there are no signatures included in the packages or patches then signature validation
+is skipped.
+The certificates can come from a variety of locations.
+If \fB\-k\fR \fIkeystore\fR is specified, and \fIkeystore\fR is a directory, then \fIkeystore\fR is assumed to be the base directory of the certificates to be used.
+If \fIkeystore\fR is a file, then the file itself is assumed to have all required keys and certificates.
+When \fB\-k\fR is not specified, then \fB/var/sadm/security\fR is used as the base directory.
+.PP
+Within the specified base directory, the store locations to be searched are different based on the application doing the searching and the type of store being searched for.
+The following directories are searched in the specified order:
+.TP
+1.
+\fI<store_dir>\fR/\fI<app_name>\fR/\fI<store_type>\fR
+.TP
+2.
+\fI<store_dir>\fR/\fI<store_type>\fR
+.PP
+Where \fI<store_dir>\fR is the directory specified by \fB\-k\fR, \fI<app_name>\fR is the name of the application doing the searching, and \fI<store_type>\fR is one of \fBkeystore\fR (for private keys), \fBcertstore\fR (for untrusted public key certificates), or \fBtruststore\fR (for trusted certificate authority certificates).
+.PP
+For example, when \fBpkgadd\fR is run with \fB\-k\fR \fB/export/certs\fR, then the following locations are successively searched to find the trust store:
+.TP
+1.
+/export/certs/pkgadd/truststore
+.TP
+2.
+/export/certs/truststore
+.PP
+This searching order enables administrators to have a single location for most applications, and special certificate locations for certain applications.
+.SH KEYSTORE AND CERTIFICATE FORMATS
+The packaging and patching utilities, such as \fBpkgtrans\fR and \fBpatchadd\fR, require access to a set of keys and certificates in order to sign, and optionally verify, packages and patches.
+.PP
+The keystore files found by following the search pattern specified in \fBKEYSTORE LOCATIONS\fR must each be a self-contained PKCS#12-format file.
+.PP
+When signing a package with \fBpkgtrans\fR, if a \fBcertstore\fR has more than one public key certificate, then each public key must have a \fBfriendlyName\fR attribute in order to be identifiable and selectable with the \fB\-a\fR option when signing
+packages or patches.
+In addition, the public key certificate selected with \fB\-a\fR and found in the \fBcertstore\fR must have an associated private key in the keystore.
+.PP
+Several browsers and utilities can be used to export and import certificates and keys into a PKCS#12 keystore.
+For example, a trusted certificate can be exported from Mozilla, and then imported into a PKCS#12 keystore for use with \fBpkgadd\fR with the OpenSSL Toolkit.
+.SH PASS PHRASE ARGUMENTS
+\fBpkgtrans\fR and \fBpkgadd\fR accept password arguments, typically using \fB\-p\fR to specify the password.
+These allow the password to be obtained from a variety of sources.
+Both of these options take a single argument whose format is described below.
+If no
+password argument is given and a password is required then the user is prompted to enter one: this will typically be read from the current terminal with echoing turned off.
+.TP
+\fBpass:\fIpassword\fR
+The actual password is \fIpassword\fR.
+Because the password is visible to utilities such as \fBps\fR this form should only be used where security is not important.
+.TP
+\fBenv:\fIvar\fR
+Obtain the password from the environment variable \fIvar\fR.
+Because the environment of other processes is visible on certain platforms this option should be used with caution.
+.TP
+\fBfile:\fIpathname\fR
+The first line contained within \fIpathname\fR is the password.
+\fIpathname\fR need not refer to a regular file: it could, for example, refer to a device or named
+pipe.
+For example, to read the password from standard input, use \fBfile:/dev/stdin\fR.
+.TP
+.B console
+Read the password from \fB/dev/tty\fR.
+..
+.SH EXAMPLES
+\fBExample 1 \fRInstalling a Package from a Solaris DVD
+.LP
+The following example installs a package from a Solaris DVD.
+You are prompted for the name of the package you want to install.
+.PP
+.RS
+.nf
+\fBpkgadd \-d /cdrom/cdrom0/s0/Solaris_10/Product\fR
+.fi
+.RE
+.PP
+\fBExample 2 \fRInstalling a Set of Packages from a Datastream
+.LP
+The example command shown below installs all of the packages in the datastream specified by the \fB\-d\fR source specifier.
+Prior to this command, this datastream must have been created with the
+.IR pkgtrans (1)
+command.
+.PP
+.RS
+.nf
+\fBpkgadd \-d /var/tmp/datastream all\fR
+.fi
+.RE
+.PP
+The keyword \fBall\fR specifies that all of the packages found in the designated datastream will be installed.
+.SH EXIT STATUS
+.TP
+.B 0
+Successful completion
+.TP
+.B 1
+Fatal error.
+.TP
+.B 2
+Warning.
+.TP
+.B 3
+Interruption.
+.TP
+.B 4
+Administration.
+.TP
+.B 5
+Administration.
+Interaction is required.
+Do not use \fBpkgadd\fR \fB\-n\fR.
+.TP
+.B 10
+Reboot after installation of all packages.
+.TP
+.B 20
+Reboot after installation of this package.
+.ig
+.SH ENVIRONMENT VARIABLES
+.TP 14
+.B HTTPPROXY
+Specifies an HTTP proxy host.
+Overrides administration file setting, and \fBhttp_proxy\fR environment variable.
+.TP
+.B HTTPPROXYPORT
+Specifies the port to use when contacting the host specified by \fBHTTPPROXY\fR.
+Ignored if \fBHTTPPROXY\fR is not set.
+.TP
+.B http_proxy
+URL format for specifying proxy host and port.
+Overrides administration file setting.
+..
+.SH FILES
+.TP 30
+.B /var/sadm/install/logs/
+Location where \fBpkgadd\fR logs an instance of software installation.
+.SH SEE ALSO
+.IR pkginfo (1),
+.IR pkgmk (1),
+.IR pkgparam (1),
+.IR pkgproto (1),
+.IR pkgtrans (1),
+.IR installf (1M),
+.IR pkgask (1M),
+.IR pkgchk (1M),
+.IR pkgrm (1M),
+.IR removef (1M),
+.IR pkginfo (5)
+.ig
+.br
+.B http://www.openssl.org
+..
+.SH NOTES
+When transferring a package to a spool directory, the
+.\" \fB\-r\fR, \fB\-n\fR, and \fB\-a\fR options
+\fB\-n\fR option
+cannot be used.
+.PP
+The \fB\-r\fR option can be used to indicate a directory name as well as a filename.
+The directory can contain numerous response files, each sharing the name of the package with which it should be associated.
+This would be used, for example, when adding multiple interactive packages with
+one invocation of \fBpkgadd\fR.
+In this situation, each package would need a response file.
+If you create response files with the same name as the package (for example, \fBpkinst1\fR and \fBpkinst2\fR), then name the directory in which these files reside after the \fB\-r\fR.
+.PP
+The \fB\-n\fR option causes the installation to halt if any interaction is needed to complete it.
+.ig
+.PP
+If the default \fIadmin\fR file is too restrictive, the administration file may need to be modified to allow for total non-interaction during a package installation.
+See
+.IR admin (4)
+for details.
+.PP
+If a package stream is specified with \fB\-d\fR, and a digital signature is found in that stream, the default behavior is to attempt to validate the certificate and signature found.
+This behavior can be overridden with \fBadmin\fR file settings.
+See
+.IR admin (4)
+for more information.
+..

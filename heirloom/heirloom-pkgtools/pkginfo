@@ -1,0 +1,11 @@
+# Sccsid @(#)pkginfo	1.1 (gritter) 2/25/07
+PKG=heirloom-pkgtools
+NAME=Heirloom Packaging Tools
+DESC=A Linux variant of the SVR4 application packaging tools
+VENDOR=Gunnar Ritter
+HOTLINE=http://heirloom.sourceforge.net
+EMAIL=gunnarr@acm.org
+VERSION=070225
+ARCH=IA32,i386
+CATEGORY=utilities
+BASEDIR=/

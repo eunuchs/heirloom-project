@@ -1,0 +1,186 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T  Copyright (c) 2001, Sun Microsystems, Inc.  All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)ckstr.1	1.5 (gritter) 3/4/07
+.\"
+.\" from OpenSolaris ckstr 1 "14 Sep 1992" "SunOS 5.11" "User Commands"
+.TH CKSTR 1 "3/4/07" "Heirloom Packaging Tools" "User Commands"
+.SH NAME
+ckstr, errstr, helpstr, valstr \- display a prompt; verify and return a string answer
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBckstr\fR [\fB\-Q\fR] [\fB\-W\fR \fIwidth\fR] [ [\fB\-r\fR \fIregexp\fR] [...]] [\fB\-l\fR \fIlength\fR]
+[\fB\-d\fR \fIdefault\fR] [\fB\-h\fR \fIhelp\fR] [\fB\-e\fR \fIerror\fR] [\fB\-p\fR \fIprompt\fR]
+[\fB\-k\fR \fIpid\fR [\fB\- s\fR \fIsignal\fR]]
+.HP
+.PD 0
+.ad l
+\fBerrstr\fR [\fB\-W\fR \fIwidth\fR] [\fB\-e\fR \fIerror\fR] [\fB\-l\fR \fIlength\fR]
+[ [\fB\-r\fR \fIregexp\fR] [...]]
+.HP
+.PD 0
+.ad l
+\fBhelpstr\fR [\fB\-W\fR \fIwidth\fR] [\fB\-h\fR \fIhelp\fR] [\fB\-l\fR \fIlength\fR]
+[ [\fB\-r\fR \fIregexp\fR] [...]]
+.HP
+.PD 0
+.ad l
+\fBvalstr\fR [\fB\-l\fR \fIlength\fR] [ [\fB\-r\fR \fIregexp\fR] [...]] \fIinput\fR
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+The \fBckstr\fR utility prompts a user and validates the
+response.
+It defines, among other things, a prompt message whose response should be a string, text for help and error messages, and a default value (which are returned if the user responds with a RETURN).
+.PP
+The answer returned from this command must match the defined regular expression and be no longer than the length specified.
+If no regular expression is given, valid input must be a string with a length less than or equal to the length defined with no internal, leading or trailing white space.
+If
+no length is defined, the length is not checked.
+.PP
+All messages are limited in length to 79 characters and are formatted automatically.
+Tabs and newlines are removed after a single white space character in a message definition, but spaces are not removed.
+When a tilde is placed at the beginning or end of a message definition, the default text will
+be inserted at that point, allowing both custom text and the default text to be displayed.
+.PP
+If the prompt, help or error message is not defined, the default message (as defined under EXAMPLES) is displayed.
+.PP
+Three visual tool modules are linked to the \fBckstr\fR command.
+They are \fBerrstr\fR (which formats and displays an error message on the standard output), \fBhelpstr\fR (which formats and displays a help message on the standard output), and \fBvalstr\fR (which validates a response).
+.PP
+The following options and operands are supported:
+.TP
+\fB\-d\fR \fIdefault\fR
+Defines the default value as \fIdefault\fR.
+The default is not validated and so does not have to meet any criteria.
+.TP
+\fB\-e\fR \fIerror\fR
+Defines the error message as \fI error\fR.
+.TP
+\fB\-h\fR \fIhelp\fR
+Defines the help message as \fI help\fR.
+.TP
+\fB\-k\fR \fIpid\fR
+Specifies that process \fBID\fR \fIpid\fR is to be sent a signal if the user chooses to quit.
+.TP
+\fB\-l\fR \fIlength\fR
+Specifies the maximum length of the input.
+.TP
+\fB\-p\fR \fIprompt\fR
+Defines the prompt message as \fIprompt\fR.
+.TP
+\fB\-Q\fR
+Specifies that \fBquit\fR will not be allowed as a valid response.
+.TP
+\fB\-r\fR \fIregexp\fR
+Specifies a regular expression, \fI regexp\fR, against which the input should be validated.
+May include white space.
+If multiple expressions are defined, the answer need match only one of
+them.
+.TP
+\fB\-s\fR \fIsignal\fR
+Specifies that the process \fBID\fR \fIpid\fR defined with the \fB\-k\fR option is to be sent signal \fIsignal\fR when quit is chosen.
+If no signal is specified, SIGTERM is used.
+.TP
+\fB\-W\fR \fIwidth\fR
+Specifies that prompt, help and error messages will be formatted to a line length of \fIwidth\fR.
+.TP
+\fB\fIinput\fR
+Input to be verified against format length and/or regular expression criteria.
+.SH EXAMPLES
+\fBExample 1 \fRDefault prompt
+.LP
+The default prompt for \fBckstr\fR is:
+.PP
+.in +2
+.nf
+$ \fBckstr\fR
+Enter an appropriate value [?,q]:
+.fi
+.in -2
+.PP
+\fBExample 2 \fRDefault error message
+.LP
+The default error message is dependent upon the type of validation involved.
+The user will be told either that the length or the pattern matching failed.
+The default error message is:
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/errstr\fR
+ERROR: Please enter a string which contains no embedded,
+leading or trailing spaces or tabs.
+.fi
+.in -2
+.PP
+\fBExample 3 \fRDefault help message
+.LP
+The default help message is also dependent upon the type of validation involved.
+If a regular expression has been defined, the message is:
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/helpstr \fR\fB\-r\fR\fB regexp\fR
+Please enter a string which matches the following pattern:
+regexp
+.fi
+.in -2
+.PP
+Other messages define the length requirement and the definition of a string.
+.PP
+\fBExample 4 \fRUsing the quit option
+.LP
+When the quit option is chosen (and allowed), \fBq\fR is returned along with the return code \fB3\fR.
+Quit input gets a trailing newline.
+.PP
+\fBExample 5 \fRUsing the valstr module
+.LP
+The \fBvalstr\fR module will produce a usage message on stderr.
+It returns \fB0\fR for success and non-zero for failure.
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/valstr\fR
+usage: valstr [\fB\-l\fR length] [[\fB\-r\fR regexp] [\|.\|.\|.\|]] input
+.fi
+.in -2
+.sp
+.SH EXIT STATUS
+The following exit values are returned:
+.PD 0
+.TP
+.B 0
+Successful execution.
+.TP
+.B 1
+\fBEOF\fR on input, or negative width on \fB\-W\fR option, or usage error.
+.TP
+.B 2
+Invalid regular expression.
+.TP
+.B 3
+User termination (quit).
+.PD

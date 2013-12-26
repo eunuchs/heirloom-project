@@ -1,0 +1,55 @@
+README file for the Heirloom Development Tools
+==============================================
+
+The Heirloom Development Tools provide yacc, lex, m4, make, and
+SCCS, as portable derivatives of the utilities released by Sun
+as part of OpenSolaris. The OpenSolaris utilities were in turn
+derived from the original Unix versions, and are assumed be
+conforming implementations of the POSIX standard.
+
+Note that the manual page for m4 is not yet available under
+an Open Source license. In the meantime, please refer to the
+online Solaris documentation at <http://docs.sun.com>. There
+have been very few semantical changes with it, so the
+description is still generally applicable.
+
+The source code has been compiled successfully on:
+
+Linux		glibc
+Solaris		10 and above
+HP-UX		B.11.11
+AIX		5.1
+FreeBSD		5.4, 6.1
+Open UNIX	8.0.0
+Mac OS X	10.4.3
+
+It is likely to compile on other systems that provide the necessary
+wide-character functionality.
+
+To build and install the RPM package:
+
+- Execute "rpmbuild -tb heirloom-devtools-<version>.tar.bz2". The
+  result can be found in /usr/src/redhat/RPMS/i386 (or likewise)
+  and can be installed using "rpm -U".
+
+To build and install manually:
+
+- Adjust the installation paths and compiler settings in the file
+  "mk.config", which is in makefile syntax.
+
+- Execute "make", followed by "make install". "make mrproper" will
+  destroy all generated files.
+
+New releases of this project are announced on Freshmeat. If you want to
+get notified by email on each release, use their subscription service at
+<http://freshmeat.net/projects/devtools/>.
+
+The project homepage is currently at <http://heirloom.sourceforge.net>.
+
+Report bugs to
+
+Gunnar Ritter
+Freiburg i. Br.
+Germany
+<http://heirloom.sourceforge.net>
+<gunnarr@acm.org>						3/22/07

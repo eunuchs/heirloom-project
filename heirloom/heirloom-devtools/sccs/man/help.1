@@ -1,0 +1,45 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright (c) 1998, Sun Microsystems, Inc.  All Rights Reserved
+.\"
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)help.1	1.6 (gritter) 2/1/07
+.\"
+.\" from OpenSolaris sccs-help 1 "24 Feb 1998" "SunOS 5.11" "User Commands"
+.TH HELP 1 "2/1/07" "Heirloom Development Tools" "User Commands"
+.SH NAME
+help \- ask for help regarding SCCS error or warning messages
+.SH SYNOPSIS
+\fBhelp\fR [\fIargument\fR]...
+.SH DESCRIPTION
+.LP
+The \fIhelp\fR utility retrieves information to further explain errors messages and warnings from \s-1SCCS\s+1 commands.
+It also provides some information about \s-1SCCS\s+1 command usage.
+If no arguments are given, \fIhelp\fR prompts for one.
+.PP
+An \fIargument\fR may be a message number (which normally appears in parentheses following each \s-1SCCS\s+1 error or warning message), or an \s-1SCCS\s+1 command name.
+\fIhelp\fR responds with an explanation of the message or a usage line for the command.
+.PP
+When all else fails, try `\fBhelp stuck\fR'.
+.SH FILES
+.TP 20
+\fB/usr/ccs/lib/help\fR
+directory containing files of message text

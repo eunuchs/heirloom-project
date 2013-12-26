@@ -1,0 +1,133 @@
+Release ...
+* m4: Handle multibyte quote characters with defn() correctly (patch by
+  Joe Krahn).
+* make: Mac OS X compilation fix (Stefan Tramm).
+* make: Compilation fix for 64-bit environments.
+* make: Do not crash if a backslash appears at the end of the value of
+  the MAKEFLAGS environment variable, and preserve trailing spaces in macro
+  names (bug reported by Stefano Lattarini).
+
+Release 070527
+* admin: A manual page is available, based on source code released by Sun.
+* make: Macro definitions following "else" in an effective branch are
+  now handled correctly.
+* make: Removed a "extern char **environ;" declaration to make it
+  compile on CentOS 5.
+* vc: Recognizes the control character according to the LC_CTYPE locale
+  now, and has no static size limits anymore.
+* lex: Avoid a symbol conflict with the index() function that caused the
+  build to fail on some platforms.
+
+Release 070311
+* make: The SVR4.2 syntax for parallel builds has been added. This adds
+  the "-B" and "-P" options as well as the ".MUTEX:" special target.
+* make: The SVR4.2 "-w" option has been added to suppress warnings.
+* make: The "-u" option (unconditionally make the targets, even those
+  that are not outdated) is now a documented feature.
+* make: Comments following "ifeq" and other conditionals are now handled
+  correctly.
+* make: Error messages now include message numbers for use with the
+  "help" command.
+* sccs: The commands "-R info", "-R tell", and "-R clean" now operate
+  correctly. They previously terminated operation prematurely when an
+  "SCCS" directory was found but other sub-directories at the current
+  recursion level had not yet been processed.
+
+Release 070218
+* sccs: A "-R" option has been added to enable recursive operation on
+  subdirectories.
+* sccs: A manual page has been added (based on the 4.3BSD-Tahoe page).
+* make: The default variant now has the ".GET:" special target enabled
+  to retrieve data from an s.file in the current directory, similar to
+  the ".GET_POSIX:" target in the POSIX variant and the behavior of the
+  SVR4 variant.
+* make: The GNU syntax for conditional macros, "target: variable=value",
+  is now accepted.
+* make: The GNU syntax for parse-time conditionals, "ifeq (arg1, arg2)",
+  "ifdef name", etc., is now supported.
+* make: Partial support for GNU style functions, "$(function arguments)",
+  has been added. Currently, the supported functions are "dir", "notdir",
+  "suffix", "basename", "addsuffix", "addprefix", "join", "wildcard",
+  "subst", "patsubst", "strip", "findstring", "filter", "filter-out",
+  "sort", "word", "wordlist", "words", "firstword", "shell", "error", and
+  "warning".
+* make: Fixed the "-jn" option for recursive operation if given without
+  space between option and option argument; it was previously ignored.
+
+Release 070211
+* SCCS: Most of the manual pages are now available, based on source code
+  released by Sun.
+* make: Use a POSIX shell or a Bourne shell as default value for $(SHELL)
+  depending on whether POSIX mode is enabled or not. The path names of
+  these shells are set in "mk.config". Both default to "/bin/sh" to ensure
+  that the package can be built portably, thus to actually use this feature,
+  install the Heirloom Bourne shell in advance and then edit "mk.config".
+* make: A new manual page is available, based on source code released by
+  Sun.
+* get: The %G% and %H% keywords omit leading zero digits in month or day
+  numbers now, as previous (non-Solaris) versions of SCCS did.
+* The tools have been ported to HP-UX.
+* The tools have been ported to AIX.
+
+Release 070119
+* The "make" command has been added from OpenSolaris sources. Important
+  changes to the OpenSolaris version are:
+
+  * The "-j jobs" option is available, based on code distributed by Sun
+    that was previously disabled.
+  * SUN_MAKE_COMPAT_MODE is "GNU" by default. This has the effect that
+    macro definitions on the command line become part of the MAKEFLAGS
+    variable, and thus override definitions within makefiles in recursive
+    operation. Also "$<" resolves to the first prerequisite in a target
+    rule. Setting "SUN_MAKE_COMPAT_MODE=SUN" in the environment restores
+    the previous behavior.
+
+* sccs: Accept the "-a", "-p", and "-B" options to "diff" with the "diffs"
+  and "sccsdiff" sub-commands.
+* sccsdiff: Accept the "-a" and "-B" options to "diff"; also accept the
+  "-P" option but pass it as "-p" to "diff".
+* get: Do not dump core on a corrupted s-file.
+* Mac OS X portability fixes (Stefan Tramm).
+* SCCS: Handle the timezone offset on FreeBSD (bugreport by Joerg Schilling).
+* SCCS: Use O_EXCL when opening files with unique names (thanks to Joerg
+  Schilling for notification).
+
+Release 070102
+* delta: If the "bdiff" utility cannot be found, execute regular "diff"
+  instead. This removes a circular dependency on the Heirloom Toolchest
+  on systems lacking "bdiff" in their default installation, such as
+  Linux or FreeBSD.
+* SCCS: Do not use the SYS_NMLN constant since it is not portable (bug
+  reported by John Cowan).
+* help: Fixed for arguments consisting of letters only (command usage),
+  default messages file, and error message if no appropriate key could
+  be found. These problems had been introduced with the removal of the
+  internationalization code during the port.
+
+Release 061220
+* The SCCS version control system has been added as a port of the source
+  code released by Sun yesterday.
+* lex: An appropriate prototype for yyreject() is now supplied when the
+  -e or -w options are used.
+
+Release 051216
+* m4: The traditional variant now accepts the shift operators "<<" and
+  ">>" for the "eval" macro.
+* m4: The "eval" macro now uses 32-bit signed integer arithmetic
+  regardless of the host architecture, as specified by both SVID3 and
+  SUSv3.
+* lex: The functions "allprint_w", "reject_w", "yyless_w", "reject_e",
+  and "yyless_e" are now included in libl.a for use with the "-w" and
+  "-e" options, respectively.
+* lex: The "yyin" and "yyout" file descriptors now point to "stdin" and
+  "stdout" when calling main() as it has been historically the case on
+  Unix systems. This requires the use of non-standard compiler features
+  and currently only works with gcc, Sun C, and HP ANSI C. Otherwise,
+  these descriptors are initialized at the first call to yylex(), as it
+  had been the case with the previous release.
+* lex: The driver files have been moved to /usr/ccs/lib/lex to match the
+  location on historic Unix systems.
+* yacc, lex: The generated files no longer include <inttypes.h>.
+
+Release 051113
+* Initial release.

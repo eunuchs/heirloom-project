@@ -1,0 +1,220 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T  Copyright (c) 2005, Sun Microsystems, Inc.  All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)ckpath.1	1.5 (gritter) 3/4/07
+.\"
+.\" from OpenSolaris ckpath 1 "4 Nov 2005" "SunOS 5.11" "User Commands"
+.TH CKPATH 1 "3/4/07" "Heirloom Packaging Tools" "User Commands"
+.SH NAME
+ckpath, errpath, helppath, valpath \- display a prompt; verify and return a pathname
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBckpath\fR [\fB\-Q\fR] [\fB\-W\fR \fIwidth\fR] [\fB\-a\fR | l] [\fB\-b\fR | c | f | y]
+[\fB\-n\fR [o | z]] [\fB\-rtwx\fR] [\fB\-d\fR \fIdefault\fR] [\fB\-h\fR \fIhelp\fR]
+[\fB\-e\fR \fIerror\fR] [\fB\-p\fR \fIprompt\fR] [\fB\-k\fR \fIpid\fR [\fB\-s\fR \fIsignal\fR]]
+.HP
+.PD 0
+.ad l
+\fBerrpath\fR [\fB\-W\fR \fIwidth\fR] [\fB\-a\fR | l] [\fB\-b\fR | c | f | y]
+[\fB\-n\fR [o | z]] [\fB\-rtwx\fR] [\fB\-e\fR \fIerror\fR]
+.HP
+.PD 0
+.ad l
+\fBhelppath\fR [\fB\-W\fR \fIwidth\fR] [\fB\-a\fR | l] [\fB\-b\fR | c | f | y]
+[\fB\-n\fR [o | z]] [\fB\-rtwx\fR] [\fB\-h\fR \fIhelp\fR]
+.HP
+.PD 0
+.ad l
+\fBvalpath\fR [\fB\-a\fR | l] [\fB\-b\fR | c | f | y]
+[\fB\-n\fR [o | z]] [\fB\-rtwx\fR] \fIinput\fR
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+The \fBckpath\fR utility prompts a user and validates the response.
+It defines, among other things, a prompt message whose response should be a pathname, text for help and error messages, and a default value (which is returned if the user responds with a RETURN).
+.PP
+The pathname must obey the criteria specified by the first group of options.
+If no criteria is defined, the pathname must be for a normal file that does not yet exist.
+If neither \fB\-a\fR (absolute) or \fB\-l\fR (relative) is given, then either is assumed to be valid.
+.PP
+All messages are limited in length to 79 characters and are formatted automatically.
+Tabs and newlines are removed after a single white space character in a message definition, but spaces are not removed.
+When a tilde is placed at the beginning or end of a message definition, the default
+text is inserted at that point, allowing both custom text and the default text to be displayed.
+.PP
+If the prompt, help or error message is not defined, the default message (as defined under EXAMPLES) is displayed.
+.PP
+Three visual tool modules are linked to the \fBckpath\fR command.
+They are \fBerrpath\fR (which formats and displays an error message on the standard output), \fBhelppath\fR (which formats and displays a help message on the standard output), and \fBvalpath\fR (which validates a response).
+.PP
+The following options and operands are supported:
+.TP
+\fB\-a\fR
+Pathname must be an absolute path.
+.TP
+\fB\-b\fR
+Pathname must be a block special file.
+.TP
+\fB\-c\fR
+Pathname must be a character special file.
+.TP
+\fB\-d\fR \fIdefault\fR
+Defines the default value as \fIdefault\fR.
+The default is not validated and so does not have to meet any criteria.
+.TP
+\fB\-e\fR \fIerror\fR
+Defines the error message as \fI error\fR.
+.TP
+\fB\-f\fR
+Pathname must be a regular file.
+.TP
+\fB\-h\fR \fIhelp\fR
+Defines the help message as \fI help\fR.
+.TP
+\fB\-k\fR \fIpid\fR
+Specifies that process \fBID\fR \fIpid\fR is to be sent a signal if the user chooses to quit.
+.TP
+\fB\-l\fR
+Pathname must be a relative path.
+.TP
+\fB\-n\fR
+Pathname must not exist (must be new).
+.TP
+\fB\-o\fR
+Pathname must exist (must be old).
+.TP
+\fB\-p\fR \fIprompt\fR
+Defines the prompt message as \fIprompt\fR.
+.TP
+\fB\-Q\fR
+Specifies that \fBquit\fR is not allowed as a valid response.
+.TP
+\fB\-r\fR
+Pathname must be readable.
+.TP
+\fB\-s\fR \fIsignal\fR
+Specifies that the process \fBID\fR \fIpid\fR defined with the \fB\-k\fR option is to be sent signal \fIsignal\fR when quit is chosen.
+If no signal is specified, SIGTERM is used.
+.TP
+\fB\-t\fR
+Pathname must be creatable (touchable).
+Pathname will be created if it does not already exist.
+.TP
+\fB\-w\fR
+Pathname must be writable.
+.TP
+\fB\-W\fR \fIwidth\fR
+Specify that prompt, help and error messages be formatted to a line length of \fIwidth\fR.
+.TP
+\fB\-x\fR
+Pathname must be executable.
+.TP
+\fB\-y\fR
+Pathname must be a directory.
+.TP
+\fB\-z\fR
+Pathname must have a file having a size greater than zero bytes.
+.TP
+\fB\fIinput\fR
+Input to be verified against validation options.
+.SH EXAMPLES
+The text of the default messages for \fBckpath\fR depends upon the criteria options that have been used.
+.PP
+\fBExample 1 \fRDefault prompt
+.LP
+An example default prompt for \fBckpath\fR (using the \fB\-a\fR option) is:
+.PP
+.in +2
+.nf
+$ \fBckpath \fR\fB\-a\fR
+Enter an absolute pathname [?,q]
+.fi
+.in -2
+.PP
+\fBExample 2 \fRDefault error message
+.LP
+An example default error message (using the \fB\-a\fR option) is:
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/errpath \fR\fB\-a\fR
+ERROR: A pathname is a filename, optionally preceded by parent
+directories.
+The pathname you enter: - must begin with a slash (/)
+.fi
+.in -2
+.PP
+\fBExample 3 \fRDefault help message
+.LP
+An example default help message (using the \fB\-a\fR option) is:
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/helppath \fR\fB\-a\fR
+A pathname is a filename, optionally preceded by parent directories.
+The pathname you enter: - must begin with a slash (/)
+.fi
+.in -2
+.PP
+\fBExample 4 \fRThe quit option
+.LP
+When the quit option is chosen (and allowed), \fBq\fR is returned along with the return code \fB3\fR.
+Quit input gets a trailing newline.
+.PP
+\fBExample 5 \fRUsing the valpath module
+.LP
+The \fBvalpath\fR module will produce a usage message on stderr.
+It returns \fB0\fR for success and non-zero for failure.
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/valpath\fR
+usage: valpath [\fB\-[a|l][b|c|f|y][n|[o|z]]rtwx\fR] input
+.
+.
+.
+.fi
+.in -2
+.sp
+.SH EXIT STATUS
+.PD 0
+The following exit values are returned:
+.TP
+.B 0
+Successful execution.
+.TP
+.B 1
+\fBEOF\fR on input, or negative width on \fB\-W\fR option, or usage error.
+.TP
+.B 2
+Mutually exclusive options.
+.TP
+.B 3
+User termination (quit).
+.TP
+.B 4
+Mutually exclusive options.
+.PD

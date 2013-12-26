@@ -1,0 +1,89 @@
+*
+* CDDL HEADER START
+*
+* The contents of this file are subject to the terms of the
+* Common Development and Distribution License (the "License").
+* You may not use this file except in compliance with the License.
+*
+* You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+* or http://www.opensolaris.org/os/licensing.
+* See the License for the specific language governing permissions
+* and limitations under the License.
+*
+* When distributing Covered Code, include this CDDL HEADER in each
+* file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+* If applicable, add the following below this CDDL HEADER, with the
+* fields enclosed by brackets "[]" replaced with your own identifying
+* information: Portions Copyright [yyyy] [name of copyright owner]
+*
+* CDDL HEADER END
+*
+* Copyright 1995 Sun Microsystems, Inc. All rights reserved.
+* Use is subject to license terms.
+*
+* @(#)ge 1.4 06/12/12
+*
+*#ident	"@(#)sccs:help.d/ge"
+*	Messages for get command of SCCS.
+*
+-3
+"e not allowed with m"
+You can't use both the -e and -m arguments on the same get command.
+-4
+"writable `...' exists"
+For safety's sake, SCCS won't overwrite an existing g-file if it's writable.
+If you don't need the g-file, remove it and rerun the get command.
+-5
+"nonexistent sid"
+The specified sid does not exist in the
+given file.
+Check for typos.
+-9
+"... already included"
+You mentioned the same delta twice with an -i and/or an -x argument.
+-10
+"... already excluded"
+You mentioned the same delta twice with an -x and/or an -i argument.
+-11
+"internal error in get/enter()"
+``Lasciate ogni speranza, voi ch'entrate''
+This shouldn't have happened!!
+Do a "help stuck".
+-17
+"being edited: `...'"
+You can't do a get with an -e argument because someone else already
+did and hasn't made a delta yet.  If that someone else is really you,
+you can regenerate a new file to be edited, if necessary, by using the -k
+argument.  If you want to cancel the reservation entirely, see your
+SCCS administrator, and tell him/her you want the p-file edited.
+
+The data in quotes is from the p-file.
+-18
+"being edited: `...'"
+Someone else has done a get with an -e argument.
+This can't hurt what you're doing,
+but isn't it nice to know that someone else
+is making deltas to this file too?
+-19
+"release locked against editing"
+The release retrieved by `get' for editing purposes (get -e )
+is locked against further editing.
+"prs -d:LK:" on the SCCS file tells you which releases are locked.
+The `admin' command is used to lock and unlock releases.
+-20
+"curdir failed"
+Re-check what you did.  Re-try the command.  If the problem persists,
+contact your local UNIX administrator.
+-21
+"cannot change directory"
+If you know the directory name, then check to see if it exists.
+Re-try the command.  If the problem persists, contact your
+local UNIX administrator.
+-22
+"r out of range"
+The release number specified with the -r keyletter is out of range.
+This means the number was greater than 9999 or less than 1.
+-23
+"No sid prior to cutoff date-time"
+The cutoff date-time given by the user using -cdatetime is prior to 
+the creation date of the s.file.

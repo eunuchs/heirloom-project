@@ -1,0 +1,126 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T Copyright (c) 2006, Sun Microsystems, Inc. All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)removef.1m	1.7 (gritter) 2/25/07
+.\"
+.\" from OpenSolaris removef 1M "16 May 2006" "SunOS 5.11" "System Administration Commands"
+.TH REMOVEF 1M "2/25/07" "Heirloom Packaging Tools" "System Administration Commands"
+.SH NAME
+removef \- remove a file from software database
+.SH SYNOPSIS
+.HP
+.PD 0
+.ad l
+.nh
+\fBremovef\fR
+.\" [ [\fB\-M\fR] \fB\-R\fR \fIroot_path\fR]
+[\fB\-R\fR \fIroot_path\fR]
+.\" [\fB\-V\fR \fIfs_file\fR]
+\fIpkginst\fR \fIpath\fR...
+.HP
+.PD 0
+.ad l
+\fBremovef\fR
+.\" [ [\fB\-M\fR] \fB\-R\fR \fIroot_path\fR] [\fB\-V\fR \fIfs_file\fR]
+[\fB\-R\fR \fIroot_path\fR]
+\fB\-f\fR \fIpkginst\fR
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+\fBremovef\fR informs the system that the user, or software, intends to remove a pathname. Output from \fBremovef\fR is the list of input pathnames that may be safely removed (no other packages
+have a dependency on them).
+.PP
+The following options and operands are supported:
+.TP
+.B \-f
+After all files have been processed, \fBremovef\fR should be invoked with the \fB\-f\fR option to indicate that the removal phase is complete.
+.ig
+.TP
+.B \-M
+Instruct \fBremovef\fR not to use the \fB$\fR\fIroot_path\fR\fB/etc/vfstab\fR file for determining the client's mount points. This option assumes the mount points are correct on the
+server and it behaves consistently with Solaris 2.5 and earlier releases.
+..
+.TP
+\fB\-R\fR \fIroot_path\fR
+Define the full path name of a directory to use as the \fIroot_path\fR. All files, including package system information files, are relocated to a directory tree starting
+in the specified \fIroot_path\fR. The \fIroot_path\fR may be specified when installing to a client from a server (for example, \fB/export/root/client1\fR).
+.IP
+\fBremovef\fR inherits the value of the PKG_INSTALL_ROOT environment variable. (See ENVIRONMENT VARIABLES, below.) If PKG_INSTALL_ROOT is set, such as when the \fB\-R\fR option is used with
+.IR pkgadd (1M)
+or
+.IR pkgrm (1M),
+there is no need to use the \fBremovef\fR \fB\-R\fR option.
+.ig
+.IP
+Note: The root file system of any non-global zones must not be referenced with the \fB\-R\fR option. Doing so might damage the global zone's file system, might compromise the security of the global zone, and might damage the non-global zone's file system. See
+.IR zones (5).
+.TP
+\fB\-V\fR \fIfs_file\fR
+Specify an alternative \fIfs_file\fR to map the client's file systems. For example, used in situations where the \fB$\fR\fIroot_path\fR\fB/etc/vfstab\fR file is non-existent or unreliable.
+..
+.TP
+\fB\fIpath\fR
+The pathname to be removed.
+.TP
+\fB\fIpkginst\fR
+The package instance from which the pathname is being removed.
+.SH EXAMPLES
+\fBExample 1 \fRUsing \fBremovef\fR
+.LP
+The following example uses the \fBremovef\fR command in an optional pre-install script:
+.PP
+.in +2
+.nf
+echo "The following files are no longer part of this package
+and are being removed."
+removef $PKGINST /dev/xt[0-9][0-9][0-9] |
+while read pathname
+do
+echo "$pathname"
+rm \fB\-f\fR $pathname
+done
+removef \fB\-f\fR $PKGINST || exit 2
+.fi
+.in -2
+.SH ENVIRONMENT VARIABLES
+\fBremovef\fR inherits the value of the following environment variable. This variable is set when
+.IR pkgadd (1M)
+or
+.IR pkgrm (1M)
+is invoked with the \fB\-R\fR option.
+.TP
+.B PKG_INSTALL_ROOT
+If present, defines the full path name of a directory to use as the system's PKG_INSTALL_ROOT path. All product and package information files are then looked
+for in the directory tree, starting with the specified PKG_INSTALL_ROOT path. If not present, the default system path of \fB/\fR is used.
+.SH SEE ALSO
+.IR pkginfo (1),
+.IR pkgmk (1),
+.IR pkgparam (1),
+.IR pkgproto (1),
+.IR pkgtrans (1),
+.IR installf (1M),
+.IR pkgadd (1M),
+.IR pkgask (1M),
+.IR pkgchk (1M),
+.IR pkgrm (1M)

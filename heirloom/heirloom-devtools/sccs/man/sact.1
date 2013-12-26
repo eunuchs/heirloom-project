@@ -1,0 +1,65 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 1999, Sun Microsystems, Inc.
+.\"
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)sact.1	1.6 (gritter) 2/1/07
+.\"
+.\" from OpenSolaris sccs-sact 1 "1 Nov 1999" "SunOS 5.11" "User Commands"
+.TH SACT 1 "2/1/07" "Heirloom Development Tools" "User Commands"
+.SH NAME
+sact \- show editing activity status of an SCCS file
+.SH SYNOPSIS
+\fBsact\fR \fIs.filename\fR...
+.SH DESCRIPTION
+.LP
+The \fIsact\fR utility informs the user of any \s-1SCCS\s+1 files that are checked out for editing.
+.PP
+The output for each named file consists of five fields separated by \fBSPACE\fR characters.
+.TP
+\(bu
+\s-1SID\s+1 of a delta that currently exists in the \s-1SCCS\s+1 file, to which changes will be made to make the new delta
+.TP
+\(bu
+\s-1SID\s+1 for the new delta to be created
+.TP
+\(bu
+Username of the person who has the file checked out for editing.
+.TP
+\(bu
+Date that the version was checked out.
+.TP
+\(bu
+Time that the version was checked out.
+.PP
+If a directory name is used in place of the \fIs.filename\fR argument, the \fIsact\fR command applies to all \fBs.\fRfiles in that directory.
+Unreadable \fBs.\fRfiles produce an error; processing continues with the next file (if any).
+The use of `\fB\(mi\fR' as the \fIs.filename\fR argument indicates that the names of files are to be read from the standard input, one \fBs.\fRfile per
+line.
+.SH SEE ALSO
+delta(1), 
+diff(1),
+get(1), 
+help(1), 
+unget(1)
+.SH DIAGNOSTICS
+Use the \s-1SCCS\s+1 \fIhelp\fR command for explanations (see 
+\fBhelp\fR(1)).

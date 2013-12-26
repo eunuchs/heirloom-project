@@ -1,0 +1,60 @@
+Release ...
+* A bug in the supplied realloc() replacement could result in heap
+  corruption. (No resulting failures have been observed with sh so far.)
+
+Release 050706
+* Spell checking for the "cd" command is now optionally available. It can
+  be enabled in the makefile at wish.
+* Job control is not re-enabled in interactive subshells within the left
+  sides of pipelines anymore. This previously caused commands like
+  "(cat a; cat b) | cat" to fail with "+ Stopped (tty output)".
+* Job control now works on FreeBSD.
+* Calls to memcpy() with overlapping source and destination have been
+  replaced by memmove(). (Resulting erroneous behavior had not yet been
+  observed with the original code, though.)
+* The directory "/usr/lib/locale" is no longer required to be present to
+  activate locale processing. Errors from calls to setlocale() are no
+  longer reported.
+* The "NOTES" section of the manual page now lists some behavior special
+  to the Bourne shell (thanks to Sven Mascheck for maintaining the larger
+  list on the web from which the points for this one were derived).
+
+Release 050621
+* The "ulimit" command was fixed to work portably; the "-lmu" flags have
+  been added to it.
+* The default path has been changed to "/usr/5bin:/bin:/usr/bin:" to
+  provide maximum System V compatibility if the Heirloom Toolchest is
+  also installed.
+* The shell now also compiles on HP-UX (B.11.11, B.11.23), AIX 5.1, and
+  Tru64 Unix (5.1).
+* Shell accounting with the SHACCT mechanism has been enabled.
+* A manual page has been added.
+
+Release 050617
+* Temporary files for here documents are now created with mode 0600.
+  (They were previously created with mode 0666, which could leave them
+  readable and writable by all users depending on the umask.)
+* The "kill" command with a "-number" argument was broken in the first
+  release and has been fixed.
+* The "read" command was broken in the first release and has been fixed.
+* The "read" command now accepts the "-r" option (disable backslash as
+  an escape character).
+* The "umask" command now accepts the "-S" option (process symbolic
+  mode strings).
+* A SVR4.2-like "TIMEOUT" variable has been introduced. If it is set in
+  the initial environment, the shell will terminate after the value of
+  the variable in seconds. A value of 0 (the default) means no timeout.
+  It is now forbidden to set a trap on SIGALRM because of this.
+* The code has been converted to ANSI C.
+* A redefinition of the EOF macro caused the shell to hang on NetBSD.
+* Various conversions from pointers to smaller integers caused the shell
+  to fail on some 64-bit architectures.
+* With GNU libc, multibyte characters no longer leave the word splitting
+  in an inconsistent state.
+* All code points are now treated as valid in single-byte locales.
+* The "SYSV3" variable in the initial environment now causes the "echo"
+  command to accept the "-n" option.
+* The default path has been changed to "/bin:/usr/bin:".
+
+Release 050614
+* Initial release.

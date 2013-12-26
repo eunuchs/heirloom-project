@@ -1,0 +1,151 @@
+*
+* CDDL HEADER START
+*
+* The contents of this file are subject to the terms of the
+* Common Development and Distribution License (the "License").
+* You may not use this file except in compliance with the License.
+*
+* You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+* or http://www.opensolaris.org/os/licensing.
+* See the License for the specific language governing permissions
+* and limitations under the License.
+*
+* When distributing Covered Code, include this CDDL HEADER in each
+* file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+* If applicable, add the following below this CDDL HEADER, with the
+* fields enclosed by brackets "[]" replaced with your own identifying
+* information: Portions Copyright [yyyy] [name of copyright owner]
+*
+* CDDL HEADER END
+*
+* Copyright 1991 Sun Microsystems, Inc. All rights reserved.
+* Use is subject to license terms.
+*
+* @(#)cmds 1.3 06/12/12
+*
+*#ident	"@(#)sccs:help.d/cmds"
+*	Synopsis of SCCS commands
+*
+-delta
+	  delta [-r<SID>] [-s] [-n] [-g<list>] [-m<mrlist>] [-y<comment>]
+		[-p] file ...
+-get
+	get [-r<SID>] [-c<cutoff>] [-i<list>] [-x<list>] [-a<seq no.>]
+	    [-k] [-e] [-l<p>] [-p] [-m] [-n] [-s] [-b] [-g] [-t] file ...
+-admin
+     admin [-n] [-i<name>] [-r<rel>] [-t<name>] [-f<add-flag<flag-val>>] ...
+           [-d<del-flag>] ... [-a<add-login>] ... [-e<erase-login>] ...
+           [-m<mrlist>] [-y<comment>] [-h] [-z] file ...
+-help
+	help [arg]
+
+(When all else fails execute "help stuck".)
+-what
+	what file ...
+-comb
+	comb [-o] [-s] [-p<SID>] [-c<list>] file ...
+-bdiff
+	bdiff file1 file2 [numarg] [-s]
+-cdc
+	cdc -rSID [-m<mrlist>] [-y<comment>] file ...
+-rmdel
+	rmdel -rSID file ...
+-sccsdiff
+	sccsdiff old-spec new-spec [pr-args] sccsfile ...
+-stuck
+
+The SCCS help facility provides limited
+information about SCCS commands and
+error messages, respectively.  Most
+SCCS error messages provide a code (in
+parentheses) that you can use as an
+argument to help.
+
+    help [ <msg-code>|<sccs-command> ]
+
+More information about sccs commands
+can be found in the ``SunOS Reference
+Manual,'' or by using the "man" command.
+Man pages for SCCS commands have an
+"sccs-" prefix.  To do a man on the
+SCCS help command, type:
+
+    man sccs-help
+
+If the message includes a system error
+number, refer to Intro(2), for
+information about the error that
+occurred.  In some cases, SCCS will
+fail when attempting to write on a file
+system that has been mounted
+read-only.
+
+-val
+	val -
+	val [-s] [-r<SID>] [-m<name>] [-y<type>] file ...
+-vc
+	vc [-a] [-t] [-c<char>] [-s] [keyword=value ... keyword=value]
+-prs
+	prs [-d<dataspec>] [-r<SID>] [-e] [-l] [-a] file ...
+
+	(do 'help prs_kywds' for description of recognized data keywords)
+
+-prs_kywds
+
+	List of Data Keywords Recognized by the _p_r_s Command
+
+ Data                             SCCS File          Value         Format
+Keyword       Data Item            Section           Type           Type
+
+ :Dt:   Whole delta line         Delta Table  all delta line info    S
+ :DL:   Delta line stats              "         :Li:/:Ld:/:Lu:       S
+ :Li:   Lines ins by delta            "              nnnnn           S
+ :Ld:   Lines del by delta            "              nnnnn           S
+ :Lu:   Lines unc by delta            "              nnnnn           S
+ :DT:   Delta type                    "              D or R          S
+  :I:   SID                           "         :R:.:L:.:B:.:S:      S
+  :R:   Release number                "              nnnn            S
+  :L:   Level number                  "              nnnn            S
+  :B:   Branch number                 "              nnnn            S
+  :S:   Sequence number               "              nnnn            S
+  :D:   Date delta created            "         :Dy:/:Dm:/:Dd:       S
+ :Dy:   Year delta created            "               nn             S
+ :Dm:   Month delta created           "               nn             S
+ :Dd:   Day delta created             "               nn             S
+  :T:   Time delta created            "          :Th::Tm::Ts:        S
+ :Th:   Hour delta created            "               nn             S
+ :Tm:   Minutes delta created         "               nn             S
+ :Ts:   Seconds delta created         "               nn             S
+  :P:   Pgmr who created delta        "             logname          S
+ :DS:   Delta seq number              "              nnnn            S
+ :DP:   Pred delta seq number         "              nnnn            S
+ :DI:   Deltas inc,exc,ignored        "         :Dn:/:Dx:/:Dg:       S
+ :Dn:   Deltas included               "          :DS: :DS: ...       S
+ :Dx:   Deltas excluded               "          :DS: :DS: ...       S
+ :Dg:   Deltas ignored                "          :DS: :DS: ...       S
+ :MR:   MR numbers                    "              text            M
+  :C:   Comments                      "              text            M
+ :UN:   User names               User Names          text            M
+ :FL:   Flag List                   Flags    desc of all flags set   M
+  :Y:   Type flag                     "           module type        S
+ :MF:   MR valid flag                 "            yes or no         S
+ :MP:   MR valid pgm.                 "              text            S
+ :KF:   Kywd err/warn flag            "            yes or no         S
+ :BF:   Branch flag                   "            yes or no         S
+  :J:   Joint edit flag               "            yes or no         S
+ :LK:   Locked releases               "             :R: ...          S
+  :Q:   User defined keyword          "              text            S
+  :M:   Module name flag              "           module name        S
+ :FB:   Floor boundary                "               :R:            S
+ :CB:   Ceiling boundary              "               :R:            S
+ :Ds:   Default SID                   "               :I:            S
+ :ND:   Null delta flag               "            yes or no         S
+ :FD:   Descriptive text          Comments           text            M
+ :BD:   Body                        Body             text            M
+ :GB:   Gotten body                   "              text            M
+  :W:   form of _w_h_a_t(I) str          N/A          :Z::M:\t:I:        S
+  :A:   form of _w_h_a_t(I) str          N/A       :Z::Y: :M: :I::Z:     S
+  :Z:   _w_h_a_t(I) str construct        N/A             @(#)            S
+  :F:   File name                    N/A           file name         S
+ :PN:   Pathname                     N/A           pathname          S
+

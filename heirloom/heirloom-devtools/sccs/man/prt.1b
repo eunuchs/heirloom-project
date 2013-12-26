@@ -1,0 +1,189 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 1990, Sun Microsystems, Inc.
+.\"
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)prt.1b	1.9 (gritter) 3/23/07
+.\"
+.\" from OpenSolaris sccs-prt 1 "5 Oct 1990" "SunOS 5.11" "User Commands"
+.TH PRT 1B "3/23/07" "Heirloom Development Tools" "BSD System Compatibility"
+.SH NAME
+prt \- (BSD) display delta table information from an SCCS file
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBprt\fR [\fB\-abdefistu\fR]
+[\fB\-c\fR\fIdate-time\fR] [\fB\-r\fR\fIdate-time\fR] 
+[\fB\-y\fR\fIsid\fR] \fIs.filename\fR...
+.br
+.ad b
+.hy 1
+.SH DESCRIPTION
+.LP
+\fIprt\fR prints selected portions of an \s-1SCCS\s+1 file.
+By default, it prints the delta table (version log).
+.PP
+If a directory name is used in place of the \fIs.filename\fR argument, the \fIprt\fR command applies to all \fBs.\fRfiles in that directory.
+Unreadable \fBs.\fRfiles produce an error; processing continues with the next file (if any).
+The use of `\fB\(mi\fR' as the \fIs.filename\fR argument indicates that the names
+of files are to be read from the standard input, one \fBs.\fRfile per line.
+.PP
+If any option other than \fB\-y\fR, \fB\-c\fR, or \fB\-r\fR is supplied, the name of each file being processed (preceded by one \fBNEWLINE\fR
+and followed by two \fBNEWLINE\fR characters) appears above its contents.
+.PP
+If none of the \fB\-u\fR, \fB\-f\fR, \fB\-t\fR, or \fB\-b\fR options are used, \fB\-d\fR is assumed.
+\fB\-s\fR, \fB\-i\fR are mutually
+exclusive, as are \fB\-c\fR and \fB\-r\fR.
+.TP
+\fB\-a\fR
+Display log entries for all deltas, including those marked as removed.
+.TP
+\fB\-b\fR
+Print the body of the \fBs.\fRfile.
+.TP
+\fB\-d\fR
+Print delta table entries.
+This is the default.
+.TP
+\fB\-e\fR
+Everything.
+This option implies \fB\-d\fR, \fB\-i\fR, \fB\-u\fR, \fB\-f\fR, and \fB\-t\fR.
+.TP
+\fB\-f\fR
+Print the flags of each named \fBs.\fRfile.
+.RS
+.PP
+The following format is used to print those portions of the \fBs.\fRfile that are specified by the various options.
+.TP 3
+.PD 0
+\(bu
+\fBNEWLINE\fR
+.TP
+\(bu
+Type of delta (\fBD\fR or \fBR\fR)
+.TP
+\(bu
+\fBSPACE\fR
+.TP
+\(bu
+\s-1SCCS\s+1 delta \s-1ID\s+1 (SID)
+.TP
+\(bu
+\fBTAB\fR
+.TP
+\(bu
+Date and time of creation in the form: \fIyy\fR\fB/\fR\fImm\fR\fB/\fR\fBdd\fR \fIhh\fR\fB/\fR\fImm\fR\fB/\fR\fIss\fR
+.TP
+\(bu
+\fBSPACE\fR
+.TP
+\(bu
+Username the delta's creator
+.TP
+\(bu
+\fBTAB\fR
+.TP
+\(bu
+Serial number of the delta
+.TP
+\(bu
+\fBSPACE\fR
+.TP
+\(bu
+Predecessor delta's serial number
+.TP
+\(bu
+\fBTAB\fR
+.TP
+\(bu
+Line-by-line change statistics in the form: \fIinserted\fR\fB/\fR\fIdeleted\fR\fB/\fR\fIunchanged\fR
+.TP
+\(bu
+\fBNEWLINE\fR
+.TP
+\(bu
+List of included deltas, followed by a \fBNEWLINE\fR (only if there were any such deltas and the \fB\-i\fR options was used)
+.TP
+\(bu
+List of excluded deltas, followed by a \fBNEWLINE\fR (only if there were any such deltas and the \fB\-i\fR options was used)
+.TP
+\(bu
+List of ignored deltas, followed by a \fBNEWLINE\fR (only if there were any such deltas and the \fB\-i\fR options was used)
+.TP
+\(bu
+List of modification requests (MRs), followed by a \fBNEWLINE\fR (only if any \fBMR\fR numbers were supplied).
+.TP
+\(bu
+Lines of the delta commentary (if any), followed by a \fBNEWLINE.\fR
+.PD
+.RE
+.TP
+\fB\-i\fR
+Print the serial numbers of included, excluded, and ignored deltas.
+.TP
+\fB\-s\fR
+Print only the first line of the delta table entries; that is, only up to the statistics.
+.TP
+\fB\-t\fR
+Print the descriptive text contained in the \fBs.\fRfile.
+.TP
+\fB\-u\fR
+Print the user-names and/or numerical group \s-1ID\s+1R of users allowed to make deltas.
+.TP
+\fB\-c\fR\fIdate-time\fR
+Exclude delta table entries that are specified cutoff date and time.
+Each entry is printed as a single line,
+preceded by the name of the \s-1SCCS\s+1 file.
+This format (also produced by \fB\-r\fR \fB,\fR and \fB\-y\fR) makes it easy to sort multiple delta
+tables in chronological order.
+When both \fB\-y\fR and \fB\-c\fR, or \fB\-y\fR and \fB\-r\fR are supplied, \fIprt\fR stops printing when the first of the
+two conditions is met.
+.TP
+\fB\-r\fR\fIdate-time\fR
+Exclude delta table entries that are newer than the specified cutoff date and time.
+.TP
+\fB\-y\fR\fIsid\fR
+Exclude delta table entries made prior to the \s-1SID\s+1 specified.
+If no delta in the
+table has the specified SID, the entire table is printed.
+If no \s-1SID\s+1 is specified, the most recent delta is printed.
+.SH EXAMPLES
+The following command:
+.RS
+.sp
+\fB$ prt\fR \fB\-y\fR \fBprogram.c\fR
+.sp
+.RE
+produces a one-line display of the delta table entry for the most recent version:
+.LP
+\fBs.program.c:  D 1.6   88/07/06 21:39:39 username   5 4 00159/00080/00636\fR.\|.\|.
+.SH SEE ALSO
+admin(1), 
+delta(1), 
+get(1), 
+prs(1), 
+what(1), 
+sccs(1),
+sccsfile(5)
+.SH DIAGNOSTICS
+Use the \s-1SCCS\s+1 \fIhelp\fR command for explanations (see 
+\fIhelp\fR(1)).

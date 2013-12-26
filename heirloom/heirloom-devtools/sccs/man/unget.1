@@ -1,0 +1,63 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 1990, Sun Microsystems, Inc.
+.\"
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)unget.1	1.8 (gritter) 3/23/07
+.\"
+.\" from OpenSolaris sccs-unget 1 "11 Oct 1990" "SunOS 5.11" "User Commands"
+.TH UNGET 1 "3/23/07" "Heirloom Development Tools" "User Commands"
+.SH NAME
+unget \- undo a previous get of an SCCS file
+.SH SYNOPSIS
+\fBunget\fR
+[\fB\-r\fR\fIsid\fR]
+[\fB\-n\fR]
+[\fB\-s\fR]
+\fIs.filename\fR...
+.SH DESCRIPTION
+The \fIunget\fR utility undoes the effect of a \fBget\ \-e\fR command executed before the creation of the pending delta.
+.PP
+If a directory name is used in place of the \fIs.filename\fR argument, the \fIunget\fR command applies to all \fBs.\fRfiles in that directory.
+Unreadable \fBs.\fRfiles produce an error; processing continues with the next file (if any).
+The use of `\fB\(mi\fR' as the \fIs.filename\fR argument indicates that the names of files are to be read from the standard input, one \fBs.\fRfile per
+line.
+.RS
+.TP 11
+\fB\-r\fR\fIsid\fR
+When multiple versions are checked out, this option specifies which pending delta to abort.
+A diagnostic results if the specified \s-1SID\s+1 is ambiguous, or if it is necessary but omitted from the command line.
+.TP
+\fB\-s\fR
+Suppress display of the \s-1SCCS\s+1 delta \s-1ID\s+1 (SID).
+.TP
+\fB\-n\fR
+Retains the retrieved version, which is otherwise removed.
+.RE
+.SH SEE ALSO
+.LP
+delta(1),
+get(1),
+help(1),
+sact(1),
+.SH DIAGNOSTICS
+Use the \s-1SCCS\s+1 \fIhelp\fR command for explanations (see 
+\fIhelp\fR(1)).

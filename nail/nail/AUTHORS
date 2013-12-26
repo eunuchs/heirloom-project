@@ -1,0 +1,17 @@
+Berkeley Mail was (according to def.h) developed by Kurt Shoens, dated
+March 25, 1978. I very much regret that it seems impossible to include
+the people that contributed within the around fifteen years of history
+of BSD Mail. If you know more about this, contact me.
+
+After the 4.4BSD release in 1993, Mail was not further developed
+officially.  The code that Heirloom mailx is based on contains
+numerous patches from OpenBSD, NetBSD, RedHat and Debian. Namely
+the NetBSD developer Christos Zoulas wrote much of it.
+
+The maintainer and primary developer of Heirloom mailx is
+Gunnar Ritter. Its development started under the name "nail" in
+February 2000 and added especially the MIME code, network protocol
+support, and POSIX conformance improvements. In March 2006, the
+program has been integrated into the Heirloom project.
+
+See the ChangeLog for people who have contributed to mailx.

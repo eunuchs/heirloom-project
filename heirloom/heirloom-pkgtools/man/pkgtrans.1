@@ -1,0 +1,236 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T Copyright (c) 2003, Sun Microsystems, Inc.  All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)pkgtrans.1	1.10 (gritter) 2/27/07
+.\"
+.\" from OpenSolaris pkgtrans 1 "15 May 2003" "SunOS 5.11" "User Commands"
+.TH PKGTRANS 1 "2/27/07" "Heirloom Packaging Tools" "User Commands"
+.SH NAME
+pkgtrans \- translate package format
+.SH SYNOPSIS
+.HP
+.PD 0
+.ad l
+.nh
+\fBpkgtrans\fR [\fB\-inosg\fR]
+.\"[\fB\-k\fR \fIkeystore\fR] [\fB\-a\fR \fIalias\fR] [\fB\-P\fR \fIpasswd\fR]
+\fIdevice1\fR \fIdevice2\fR
+[\fIpkginst\fR]...
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+The \fBpkgtrans\fR utility translates an installable package from one format to another.
+It translates:
+.RS 5
+.PP
+a file system format to a datastream
+.ig
+.PP
+a file system format to a signed datastream
+..
+.PP
+a datastream to a file system format
+.PP
+one file system format to another file system format
+.RE
+.PP
+The options and arguments for this command are:
+.ig
+.TP 13
+\fB\-a\fR \fIalias\fR
+Use public key certificate associated with friendlyName alias, and the corresponding private key.
+See \fBKEYSTORE LOCATIONS\fR and \fBKEYSTORE AND CERTIFICATE FORMATS\fR in
+.IR pkgadd (1M)
+for more information.
+.TP
+.B \-g
+Sign resulting datastream.
+..
+.TP
+.B \-i
+Copies only the
+.IR pkginfo (5)
+and
+.IR pkgmap (5)
+files.
+.ig
+.TP
+\fB\-k\fR \fIkeystore\fR
+Use keystore to retrieve private key used to generate signature.
+If it not specified, default locations are searched to find the specified private key specified by \fB\-a\fR.
+If no alias is given, and multiple keys exist in the key store, \fBpkgtrans\fR will
+abort.
+See \fBKEYSTORE LOCATIONS\fR and \fBKEYSTORE AND CERTIFICATE FORMATS\fR in
+.IR pkgadd (1M)
+for more information on search locations
+and formats.
+.IP
+When running as a user other than root, the default base directory for certificate searching is \fB~/.pkg/security\fR, where \fB~\fR is the home directory of the user invoking \fBpkgtrans\fR.
+..
+.TP
+.B \-n
+Creates a new instance of the package on the destination device if any instance of this package already exists, up to the number specified by the MAXINST variable in the
+.IR pkginfo (5)
+file.
+.TP
+.B \-o
+Overwrites the same instance on the destination device.
+Package instance will be overwritten if it already exists.
+.ig
+.TP
+\fB\-P\fR \fIpasswd\fR
+Supply password used to decrypt the keystore.
+See \fBPASS PHRASE ARGUMENTS\fR in
+.IR pkgadd (1M)
+for details on the syntax of the argument
+to this option.
+..
+.TP
+.B \-s
+Indicates that the package should be written to \fIdevice2\fR as a datastream rather than as a file system.
+The default behavior is to write a file system format on devices that support both formats.
+.TP 13
+\fB\fIdevice1\fR
+Indicates the source device.
+The package or packages on this device will be translated and placed on \fIdevice2\fR.
+See DEVICE SPECIFIERS, below.
+.TP
+\fB\fIdevice2\fR
+Indicates the destination device.
+Translated packages will be placed on this device.
+See DEVICE SPECIFIERS, below.
+.TP
+\fB\fIpkginst\fR
+Specifies which package instance or instances on \fIdevice1\fR should be translated.
+The token \fBall\fR may be used to indicate all packages.
+\fBpkginst.*\fR can be used to indicate all instances of a package.
+If no packages are defined,
+a prompt shows all packages on the device and asks which to translate.
+.IP
+The asterisk character (\fB*\fR) is a special character to some shells and may need to be escaped.
+In the C-Shell, the \fB*\fR must be surrounded by single quotes (\fB'\fR) or preceded by a backslash (\fB\e\fR).
+.SS Device specifiers
+Packaging tools, including \fBpkgtrans\fR,
+.IR pkgadd (1M),
+and
+.IR pkgchk (1M),
+have options for specifying a package location by specifying the device on which it resides.
+Listed below are the device types that a package can be stored to and retrieved from.
+Note that source and destination
+devices cannot be the same.
+.TP 13
+.B device
+Packages can be stored to a character or block device by specifying the device identifier as the device.
+Common examples of this device type are \fB/dev/rmt/0\fR for a removable magnetic tape and \fB/floppy/floppy0\fR for the first floppy disk on the
+system.
+\fBpkgtrans\fR can also produce regular file system files in a stream format, which is suitable for storage on a character device, web server, or as input to
+.IR pkgadd (1M).
+.TP
+.B "device alias"
+Devices that have been specified in \fB/etc/device.tab\fR are eligible for being the recipient or source of a package.
+Common examples of this type of device specification are \fBspool\fR (the default package device location) and \fBdisk1\fR.
+These names correspond to devices specified in \fB/etc/device.tab\fR
+.TP
+.B directory
+Packages can be stored onto a directory by specifying an absolute path to a file system directory.
+The package contents reside in a directory within the specified directory.
+The package directory name must be identical to its \fBPKG\fR specification in the
+.IR pkginfo (5)
+file.
+An example device specification of this type is \fB/export/packages\fR.
+.SH EXAMPLES
+\fBExample 1 \fRTranslating All Packages on the Floppy Disk
+.LP
+The following example translates all packages on the floppy drive \fB/dev/diskette\fR and places the translations on \fB/tmp\fR:
+.PP
+.RS
+.nf
+pkgtrans /dev/diskette /tmp all
+.fi
+.RE
+.PP
+\fBExample 2 \fRTranslating Packages on \fB/tmp\fR
+.LP
+The following example translates packages \fBpkg1\fR and \fBpkg2\fR on \fB/tmp\fR and places their translations (that is, a datastream) on the \fB9track1\fR output device:
+.PP
+.RS
+.nf
+pkgtrans /tmp 9track1 pkg1 pkg2
+.fi
+.RE
+.PP
+\fBExample 3 \fRTranslating Packages on \fB/tmp\fR
+.LP
+The following example translates \fBpkg1\fR and \fBpkg2\fR on \fB/tmp\fR and places them on the diskette in a datastream format:
+.PP
+.RS
+.nf
+pkgtrans \-s /tmp /dev/diskette pkg1 pkg2
+.fi
+.RE
+.ig
+.PP
+\fBExample 3a \fRCreating a Signed Package
+.LP
+The following example creates a signed package from \fBpkg1\fR and \fBpkg2\fR, and reads the password from the \fB$PASS\fR environment variable:
+.PP
+.RS
+.nf
+pkgtrans \-sg \-k /tmp/keystore.p12 \-alias foo \e
+    \-p env:PASS /tmp /tmp/signedpkg pkg1 pkg2
+.fi
+.RE
+.PP
+..
+\fBExample 4 \fRTranslating a Package Datastream
+.LP
+The following example translates a package datastream into a file system format package:
+.PP
+.RS
+.nf
+pkgtrans /tmp/pkg1.pkg ~/tmp pkg1
+.fi
+.RE
+.SH ENVIRONMENT VARIABLES
+The \fBMAXINST\fR variable is set in the
+.IR pkginfo (5)
+file and declares the maximum number of package instances.
+.SH SEE ALSO
+.IR pkginfo (1),
+.IR pkgmk (1),
+.IR pkgparam (1),
+.IR pkgproto (1),
+.IR installf (1M),
+.IR pkgadd (1M),
+.IR pkgask (1M),
+.IR pkgrm (1M),
+.IR removef (1M),
+.IR pkginfo (5),
+.IR pkgmap (5)
+.SH NOTES
+By default, \fBpkgtrans\fR does not translate any instance of a package if any instance of that package already exists on the destination device.
+Using the \fB\-n\fR option creates a new instance if an instance of this package already exists.
+Using the \fB\-o\fR option
+overwrites an instance of this package if it already exists.
+Neither of these options are useful if the destination device is a datastream.

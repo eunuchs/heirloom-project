@@ -1,0 +1,301 @@
+'\" t
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").  
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright (c) 1999, Sun Microsystems, Inc.
+.\"
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)prs.1	1.8 (gritter) 3/23/07
+.\"
+.\" from OpenSolaris sccs-prs 1 "1 Nov 1999" "SunOS 5.11" "User Commands"
+.TH PRS 1 "3/23/07" "Heirloom Development Tools" "User Commands"
+.SH NAME
+prs \- display selected portions of an SCCS history
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBprs\fR
+[\fB\-d\fR\fIdataspec\fR]
+[\fB\-r\fR\fIsid\fR]
+[\fB\-e\fR]
+[\fB\-l\fR]
+[\fB\-c\fR\fIdate-time\fR]
+[\fB\-a\fR]
+\fIs.filename\fR...
+.br
+.ad b
+.hy 1
+.SH DESCRIPTION
+.LP
+The \fIprs\fR utility displays part or all of the \s-1SCCS\s+1 file (see 
+\fIsccsfile\fR(5)) in a user supplied format.
+.PP
+If a directory name is used in place of the \fIs.filename\fR argument, the \fIprs\fR command applies to all \fBs.\fRfiles in that directory.
+Unreadable \fBs.\fRfiles produce an error; processing continues with the next file (if any).
+The use of `\fB\(mi\fR' as the \fIs.filename\fR argument indicates that the names of files are to be read from the standard input, one \fBs.\fRfile per
+line.
+.PP
+In the absence of options, \fIprs\fR displays the delta table (version log).
+In the absence of \fB\-d\fR, or \fB\-l\fR, \fIprs\fR displays the entry for each delta indicated by the other options.
+.RS 5
+.TP 15
+\fB\-d\fR\fIdataspec\fR \fR
+Produce a report according to the indicated data specification.
+\fIdataspec\fR consists of a (quoted) text string that includes embedded data keywords of the form: `\fB:\fR\fIkey\fR\fB:\fR' (see \fIData Keywords\fR, below).
+\fIprs\fR expands these keywords in the output it produces.
+To specify a \fBTAB\fR character in the output, use \fB\et\fR; to specify a NEWLINE in the output, use \fB\en\fR\&.
+.TP
+\fB\-r\fR\fIsid\fR \fR
+Specifies the \s-1SCCS\s+1 delta \s-1ID\s+1 (\s-1SID\s+1) of the delta for which information is desired.
+If no \s-1SID\s+1 is specified, the most recently created delta is used.
+.TP
+\fB\-e\fR \fR
+Requests information for all deltas created \fIearlier\fR than, and including, the delta indicated with \fB\-r\fR or \fB\-c\fR.
+.TP
+\fB\-l\fR \fR
+Requests information for all deltas created \fIlater\fR than, and including, the delta indicated with \fB\-r\fR or \fB\-c\fR.
+.TP
+\fB\-c\fR\fIdate-time\fR \fR
+Either options \fB\-e \fRor \fB\-l \fRmust be used with this option.
+\fB\-c\fR\fIdate-time\fR displays information on the deltas checked in either prior to and including the date and time indicated by the \fIdate-time\fR argument (option \fB\-e\fR); or later than and including the date and time indicated (option \fB\-l\fR).
+\fIdate-time\fR takes the form:
+.sp
+\fIyy\fR[\fImm\fR[\fIdd\fR[\fIhh\fR[\fImm\fR[\fIss\fR]\|]\|]\|]\|]
+.sp
+Units omitted from the indicated date and time default to their maximum possible values; that is \fB\-c\fR\fB7502\fR is equivalent to \fB\-c\fR\fB750228235959\fR.
+Any number of non-numeric characters may separate the various 2 digit components.
+If white-space characters occur, the \fIdate-time\fR specification must be quoted.
+Values of \fIyy\fR in the range \fB69\(mi99\fR refer to the twentieth
+century.
+Values in the range of \fB00\(mi68\fR refer to the twenty-first century.
+.TP
+\fB\-a\fR \fR
+Includes all deltas, including those marked as removed (see 
+\fIrmdel\fR(1)).
+.RE
+.SH "DATA KEYWORDS"
+Data keywords specify which parts of an \s-1SCCS\s+1 file are to be retrieved.
+All parts of an \s-1SCCS\s+1 file (see 
+\fIsccsfile\fR(5)) have an associated data keyword.
+A data keyword may appear any number of times in a data specification argument to \fB\-d\fR.
+These data keywords are listed in the
+table below: 
+.sp
+.TS
+center expand tab();
+c1 c1 c1 c1 c
+c1 l1 c1 c1 c.
+\fIKeyword\fR\fIData Item\fR\fIFile Section*\fR\fIValue\fR\fIFormat\fR**
+_
+\fB:A:\fRT{
+a format for the \fIwhat\fR string:
+T}N/A\fB:Z::Y: :M: :I::Z:\fRS
+\fB:B:\fRT{
+branch number
+T}D\fInnnn\fRS
+\fB:BD:\fRT{
+body
+T}B\fItext\fRM
+\fB:BF:\fRT{
+branch flag
+T}F\fByes\fR or \fBno\fRS
+\fB:CB:\fRT{
+ceiling boundary
+T}F\fB:R:\fRS
+\fB:C:\fRT{
+comments for delta
+T}D\fItext\fRM
+\fB:D:\fRT{
+date delta created
+T}D\fB:Dy:/:Dm:/:Dd:\fRS
+\fB:Dd:\fRT{
+day delta created
+T}D\fInn\fRS
+\fB:Dg:\fRT{
+deltas ignored (seq #)
+T}D\fB:DS: :DS:\fR\|.\|.\|.S
+\fB:DI:\fRT{
+seq-no. of deltas included, excluded, ignored
+T}T{
+D
+T}\fB:Dn:/:Dx:/:Dg:\fRS
+\fB:DL:\fRT{
+delta line statistics
+T}D\fB:Li:/:Ld:/:Lu:\fRS
+\fB:Dm:\fRT{
+month delta created
+T}D\fInn\fRS
+\fB:Dn:\fRT{
+deltas included (seq #)
+T}D\fB:DS: :DS:\fR\|.\|.\|.S
+\fB:DP:\fRT{
+predecessor delta seq-no. 
+T}D\fInnnn\fRS
+\fB:Ds:\fRT{
+default SID
+T}F\fB:I:\fRS
+\fB:DS:\fRT{
+delta sequence number
+T}D\fInnnn\fRS
+\fB:Dt:\fRT{
+delta information
+T}D \fB:DT: :I: :D: :T: :P: :DS: :DP:\fRS
+\fB:DT:\fRT{
+delta type
+T}D\fBD\fR or \fBR\fRS
+\fB:Dx:\fRT{
+deltas excluded (seq #)
+T}D\fB:DS:\fR \|.\|.\|.S
+\fB:Dy:\fRT{
+year delta created
+T}D\fInn\fRS
+\fB:F:\fRT{
+\fBs.\fRfile name
+T}N/A\fItext\fRS
+\fB:FB:\fRT{
+floor boundary
+T}F\fB:R:\fRS
+\fB:FD:\fRT{
+file descriptive text
+T}C\fItext\fRM
+\fB:FL:\fRT{
+flag list
+T}F\fItext\fRM
+\fB:GB:\fRT{
+gotten body
+T}B\fItext\fRM
+\fB:I:\fRT{
+SCCS delta ID (SID)
+T}D\fB:R:.:L:.:B:.:S:\fRS
+\fB:J:\fRT{
+joint edit flag
+T}F\fByes\fR or \fBno\fRS
+\fB:KF:\fRT{
+keyword error/warning flag
+T}F\fByes\fR or \fBno\fRS
+\fB:L:\fRT{
+level number
+T}D\fInnnn\fRS
+\fB:Ld:\fRT{
+lines deleted by delta
+T}D\fInnnnn\fRS
+\fB:Li:\fRT{
+lines inserted by delta
+T}D\fInnnnn\fRS
+\fB:LK:\fRT{
+locked releases
+T}F\fB:R:\fR\|.\|.\|.S
+\fB:Lu:\fRT{
+lines unchanged by delta
+T}D\fInnnnn\fRS
+\fB:M:\fRT{
+module name
+T}F\fItext\fRS
+\fB:MF:\fRT{
+MR validation flag
+T}F\fByes\fR or \fBno\fRS
+\fB:MP:\fRT{
+MR validation program
+T}F\fItext\fRS
+\fB:MR:\fRT{
+MR numbers for delta
+T}D\fItext\fRM
+\fB:ND:\fRT{
+null delta flag
+T}F\fByes\fR or \fBno\fRS
+\fB:Q:\fRT{
+user defined keyword
+T}F\fItext\fRS
+\fB:P:\fRT{
+user who created delta
+T}D\fIusername\fRS
+\fB:PN:\fRT{
+\fBs.\fRfile's pathname
+T}N/A\fItext\fRS
+\fB:R:\fRT{
+release number
+T}D\fInnnn\fRS
+\fB:S:\fRT{
+sequence number
+T}D\fInnnn\fRS
+\fB:T:\fRT{
+time delta created
+T}D\fB:Th:::Tm:::Ts:\fRS
+\fB:Th:\fRT{
+hour delta created
+T}D\fInn\fRS
+\fB:Tm:\fRT{
+minutes delta created
+T}D\fInn\fRS
+\fB:Ts:\fRT{
+seconds delta created
+T}D\fInn\fRS
+\fB:UN:\fRT{
+user names
+T}U\fItext\fRM
+\fB:W:\fRT{
+a form of \fIwhat\fR string
+T}N/A\fB:Z::M:\et:I:\fRS
+\fB:Y:\fRT{
+module type flag
+T}F\fItext\fRS
+\fB:Z:\fRT{
+\fIwhat\fR string delimiter
+T}N/A\fB@(#)\fRS
+.TE
+.LP
+*B = body, D = delta table, F = flags, U = user names
+.br
+**S = simple format, M = multi-line format
+.sp
+.SH EXAMPLES
+.LP
+\fBExample 1 \fRDisplaying delta entries
+.LP
+The following command:
+.PP
+.in +2
+.nf
+$ \fBprs \-e \-d":I:\et:P:" program.c\fR
+.fi
+.in -2
+.PP
+produces:
+.PP
+.in +2
+.nf
+1.6	username
+1.5 username...
+.fi
+.in -2
+.sp
+.SH FILES
+.TP 15
+\fB/tmp/pr?????\fR \fR
+temporary file
+.SH SEE ALSO
+admin(1), 
+delta(1), 
+get(1), 
+help(1), 
+sccsfile(5)
+.SH DIAGNOSTICS
+Use the \s-1SCCS\s+1 \fIhelp\fR command for explanations (see 
+\fIhelp\fR(1)).

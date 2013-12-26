@@ -1,0 +1,178 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T  Copyright (c) 2001, Sun Microsystems, Inc.  All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)pkgrm.1m	1.8 (gritter) 2/25/07
+.\"
+.\" from OpenSolaris pkgrm 1M "6 Apr 2005" "SunOS 5.11" "System Administration Commands"
+.TH PKGRM 1M "2/25/07" "Heirloom Packaging Tools" "System Administration Commands"
+.SH NAME
+pkgrm \- remove a package from the system
+.SH SYNOPSIS
+.HP
+.PD 0
+.ad l
+.nh
+\fBpkgrm\fR [\fB\-nv\fR]
+.\" [\fB\-a\fR \fIadmin\fR]
+.\" [ [\fB\-A\fR | \fB\-M\fR] \fB\-R\fR \fIroot_path\fR]
+[\fB\-R\fR \fIroot_path\fR]
+.\" [\fB\-V\fR \fIfs_file\fR]
+[pkginst... | \fB\-Y\fR \fIcategory\fR[,\fIcategory\fR\&.\|.\|.]]
+.HP
+.PD 0
+.ad l
+\fBpkgrm\fR \fB\-s\fR \fIspool\fR
+[pkginst... | \fB\-Y\fR \fIcategory\fR[,\fIcategory\fR\&.\|.\|.]]
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+\fBpkgrm\fR will remove a previously installed or partially installed package from the system.
+A check is made to determine if any other packages depend on the one being removed.
+.\" If a dependency exists, the action taken is defined in the \fBadmin\fR file.
+.PP
+The default state for the command is in interactive mode, meaning that prompt messages are given during processing to allow the administrator to confirm the actions being taken.
+Non-interactive mode can be requested with the \fB\-n\fR option.
+.PP
+The \fB\-s\fR option can be used to specify the directory from which spooled packages should be removed.
+.PP
+Certain unbundled and third-party packages are no longer entirely compatible with the latest version of \fBpkgrm\fR.
+These packages require user interaction throughout the removal and not just at the very beginning.
+.PP
+To remove these older packages\c
+.\" (released prior to Solaris 2.4)
+, set the following environment variable:
+\fBNONABI_SCRIPTS=TRUE\fR.
+\fBpkgrm\fR permits keyboard interaction throughout the removal as long as this environment variable is set.
+.PP
+The following options and operands are supported:
+.ig
+.TP 13
+\fB\-a\fR\fI admin\fR
+Use the installation administration file, \fBadmin\fR, in place of the default \fBadmin\fR file.
+\fBpkgrm\fR first looks in the current working directory for
+the administration file.
+If the specified administration file is not in the current working directory, \fBpkgrm\fR looks in the \fB/var/sadm/install/admin\fR directory for the administration file.
+.TP
+.B \-A
+Remove the package files from the client's file system, absolutely.
+If a file is shared with other packages, the default behavior is to not remove the file from the client's file system.
+.TP
+.B \-M
+Instruct \fBpkgrm\fR not to use the \fB$\fR\fIroot_path\fR\fB/etc/vfstab\fR file for determining the client's mount points.
+This option assumes the mount points are correct on the server
+and it behaves consistently with Solaris 2.5 and earlier releases.
+..
+.TP 13
+.B \-n
+Non-interactive mode.
+If there is a need for interaction, the command will exit.
+.IP
+Use of this option requires that at least one package instance be named upon invocation of the command.
+Certain conditions must exist for a package to be removed non-interactively or a non-restrictive \fBadmin\fR file needs to be used.
+.TP
+\fB\-R\fR\fI root_path\fR
+Defines the full path name of a directory to use as the \fIroot_path\fR.
+All files, including package system information files, are relocated to a directory tree starting in the specified \fIroot_path\fR.
+.ig
+.IP
+Note: The root file system of any non-global zones must not be referenced with the \fB\-R\fR option.
+Doing so might damage the global zone's file system, might compromise the security of the global zone, and might damage the non-global zone's file system.
+See
+.IR zones (5).
+..
+.TP
+\fB\-s\fR\fI spool\fR
+Remove the specified package(s) from the directory \fIspool\fR.
+The default directory for spooled packages is \fB/var/sadm/pkg\fR.
+.TP
+.B \-v
+Trace all of the scripts that get executed by \fBpkgrm\fR, located in the \fIpkginst\fR\fB/install\fR directory.
+This option is used for debugging the procedural and non-procedural scripts.
+.ig
+.TP
+\fB\-V\fR\fI fs_file\fR
+Specify an alternative \fIfs_file\fR to map the client's file systems.
+Used in situations where the \fB$\fR\fIroot_path\fR\fB/etc/vfstab\fR
+file is non-existent or unreliable.
+..
+.TP
+\fB\-Y\fR \fIcategory\fR
+Remove packages based on the value of the \fBCATEGORY\fR parameter stored in the installed or spooled package's
+.IR pkginfo (5)
+file.
+No package with the \fBCATEGORY\fR value of \fBsystem\fR can removed from the file system with this option.
+.TP 13
+\fB\fIpkginst\fR
+Specifies the package to be removed.
+The format \fIpkginst\fR\fB\&.*\fR can be used to remove all instances of a package.
+.IP
+The asterisk character (\fB*\fR) is a special character to some shells and may need to be escaped.
+In the C-Shell, "*" must be surrounded by single quotes (\fB'\fR) or preceded by a backslash (\e).
+.SH EXAMPLES
+\fBExample 1 \fRRemoving All instances of \fBSUNWjunk\fR From \fBclient1\fR
+.LP
+The following example removes all instances of \fBSUNWjunk\fR from \fBclient1\fR:
+.PP
+.RS
+.nf
+pkgrm \fB\-R\fR /export/root/client1 SUNWjunk*
+.fi
+.RE
+.PP
+Note the caveat on the use of the \fB\-R\fR option in the description of that option, above.
+.SH EXIT STATUS
+The following exit values are returned:
+.TP
+.B 0
+Successful completion.
+.TP
+.B 1
+Fatal error.
+.TP
+.B 2
+Warning.
+.TP
+.B 3
+Interruption.
+.TP
+.B 4
+Administration.
+.TP
+.B 10
+Reboot after removal of all packages.
+.TP
+.B 20
+Reboot after removal of this package.
+.SH SEE ALSO
+.IR pkginfo (1),
+.IR pkgmk (1),
+.IR pkgparam (1),
+.IR pkgproto (1),
+.IR pkgtrans (1),
+.IR installf (1M),
+.IR pkgadd (1M),
+.IR pkgask (1M),
+.IR pkgchk (1M),
+.IR removef (1M),
+.IR pkginfo (5),

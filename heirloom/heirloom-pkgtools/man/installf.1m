@@ -1,0 +1,283 @@
+'\" t
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T Copyright (c) 2006, Sun Microsystems, Inc. All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)installf.1m	1.8 (gritter) 2/25/07
+.\"
+.\" from OpenSolaris installf 1M "16 May 2006" "SunOS 5.11" "System Administration Commands"
+.TH INSTALLF 1M "2/25/07" "Heirloom Packaging Tools" "System Administration Commands"
+.SH NAME
+installf \- add a file to the software installation database
+.SH SYNOPSIS
+.HP
+.PD 0
+.ad l
+.nh
+\fBinstallf\fR [\fB\-c\fR \fIclass\fR]
+.\" [ [\fB\-M\fR] \fB\-R\fR \fIroot_path\fR]
+[\fB\-R\fR \fIroot_path\fR]
+.\" [\fB\-V\fR \fIfs_file\fR]
+\fIpkginst\fR \fIpathname\fR
+[\fIftype\fR [\fImajor\fR \fIminor\fR] [\fImode\fR \fIowner\fR \fIgroup\fR]]
+.HP
+.PD 0
+.ad l
+\fBinstallf\fR [\fB\-c\fR \fIclass\fR]
+.\" [ [\fB\-M\fR] \fB\-R\fR \fIroot_path\fR]
+[\fB\-R\fR \fIroot_path\fR]
+.\" [\fB\-V\fR \fIfs_file\fR]
+\fIpkginst\fR \-
+.HP
+.PD 0
+.ad l
+\fBinstallf\fR \fB\-f\fR [\fB\-c\fR \fIclass\fR]
+.\" [ [\fB\-M\fR] \fB\-R\fR \fIroot_path\fR]
+[\fB\-R\fR \fIroot_path\fR]
+.\" [\fB\-V\fR \fIfs_file\fR]
+\fIpkginst\fR
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+\fBinstallf\fR informs the system that a pathname not listed in the
+.IR pkgmap (5)
+file is being created or modified.
+It should be invoked before any file modifications have occurred.
+.PP
+When the second synopsis is used, the pathname descriptions will be read from standard input.
+These descriptions are the same as would be given in the first synopsis but the information is given in the form of a list.
+The descriptions should be in the form:
+.PP
+\fIpathname\fR [ \fIftype\fR [\| \fImajor\fR \fIminor\fR ] [ \fImode\fR \fIowner\fR \fIgroup\fR ]\|]
+.PP
+After all files have been appropriately created and/or modified, \fBinstallf\fR should be invoked with the \fB\-f\fR synopsis to indicate that installation is final.
+Links will be created at this time and, if attribute information for a pathname was not specified during the
+original invocation of \fBinstallf\fR, or was not already stored on the system, the current attribute values for the pathname will be stored.
+Otherwise, \fBinstallf\fR verifies that attribute values match those given on the command line, making corrections as necessary.
+In all
+cases, the current content information is calculated and stored appropriately.
+.TP 10
+\fB\-c\fR \fIclass\fR
+Class to which installed objects should be associated.
+Default class is \fBnone\fR.
+.TP
+.B \-f
+Indicates that installation is complete.
+This option is used with the final invocation of \fBinstallf\fR (for all files of a given class).
+.ig
+.TP
+.B \-M
+Instruct \fBinstallf\fR not to use the \fB$\fR\fIroot_path\fR\fB/etc/vfstab\fR file for determining the client's mount points.
+This option assumes the mount points are correct on the
+server and it behaves consistently with Solaris 2.5 and earlier releases.
+..
+.TP
+\fB\-R\fR \fIroot_path\fR
+Define the full path name of a directory to use as the \fIroot_path\fR.
+All files, including package system information files, are relocated to a directory tree starting
+in the specified \fIroot_path\fR.
+.ig
+The \fIroot_path\fR can be specified when installing to a client from a server (for example, \fB/export/root/client1\fR).
+..
+.IP
+\fBinstallf\fR inherits the value of the PKG_INSTALL_ROOT environment variable.
+(See ENVIRONMENT VARIABLES, below.) If PKG_INSTALL_ROOT is set, such as when the \fB\-R\fR option is used with
+.IR pkgadd (1M)
+or
+.IR pkgrm (1M),
+there is no need to use the \fBinstallf\fR \fB\-R\fR option.
+.ig
+.IP
+Note: The root file system of any non-global zones must not be referenced with the \fB\-R\fR option.
+Doing so might damage the global zone's file system, might compromise the security of the global zone, and might damage the non-global zone's file system.
+See
+.IR zones (5).
+..
+.ig
+.TP
+\fB\-V\fR \fIfs_file\fR
+Specify an alternative \fIfs_file\fR to map the client's file systems.
+For example, used in situations where the \fB$\fR\fIroot_path\fR\fB/etc/vfstab\fR file is non-existent or unreliable.
+..
+.TP 10
+\fB\fIpkginst\fR
+Name of package instance with which the pathname should be associated.
+.TP
+\fB\fIpathname\fR
+Pathname that is being created or modified.
+.TP
+\fB\fIftype\fR
+A one-character field that indicates the file type.
+Possible file types include:
+.RS 10
+.TP
+.PD 0
+.B b
+block special device
+.TP
+.B c
+character special device
+.TP
+.B d
+directory
+.TP
+.B e
+a file to be edited upon installation or removal
+.TP
+.B f
+a standard executable or data file
+.TP
+.B l
+linked file
+.TP
+.B p
+named pipe
+.TP
+.B s
+symbolic link
+.TP
+.B v
+volatile file (one whose contents are expected to change)
+.TP
+.B x
+an exclusive directory
+.PD
+.RE
+.TP 10
+\fB\fImajor\fR
+The major device number.
+The field is only specified for block or character special devices.
+.TP
+\fB\fIminor\fR
+The minor device number.
+The field is only specified for block or character special devices.
+.TP
+\fB\fImode\fR
+The octal mode of the file (for example, 0664).
+A question mark (\fB?\fR) indicates that the mode will be left unchanged, implying that the file already exists on the target machine.
+This field is not used for linked
+or symbolically linked files.
+.TP
+\fB\fIowner\fR
+The owner of the file (for example, \fBbin\fR or \fBroot\fR).
+The field is limited to 14 characters in length.
+A question mark (\fB?\fR) indicates that the owner will be left unchanged, implying
+that the file already exists on the target machine.
+This field is not used for linked or symbolically linked files.
+.TP
+\fB\fIgroup\fR
+The group to which the file belongs (for example, \fBbin\fR or \fBsys\fR).
+The field is limited to 14 characters in length.
+A question mark (\fB?\fR) indicates that the group will be left
+unchanged, implying that the file already exists on the target machine.
+This field is not used for linked or symbolically linked files.
+.SH EXAMPLES
+\fBExample 1 \fRThe use of \fBinstallf\fR.
+.LP
+The following example shows the use of \fBinstallf\fR, invoked from an optional pre-install or post-install script:
+.PP
+.in +2
+.nf
+\fB#create /dev/xt directory
+#(needs to be done before drvinstall)
+installf $PKGINST /dev/xt d 755 root sys ||
+	exit 2
+majno=`/usr/sbin/drvinstall \fR\fB\-m\fR\fB /etc/master.d/xt
+\fR\fB\-d\fR\fB $BASEDIR/data/xt.o \fR\fB\-v\fR\fB1.0` ||
+	exit 2
+i=00
+while [ $i \(milt $limit ]
+do
+for j in 0 1 2 3 4 5 6 7
+do
+echo /dev/xt$i$j c $majno `expr $i ? 8 + $j`
+644 root sys |
+echo /dev/xt$i$j=/dev/xt/$i$j
+done
+i=`expr $i + 1`
+[ $i \(mile 9 ] && i="0$i" #add leading zero
+done | installf $PKGINST \(mi || exit 2
+# finalized installation, create links
+installf \fR\fB\-f\fR\fB $PKGINST || exit 2\fR
+.fi
+.in -2
+.sp
+.SH ENVIRONMENT VARIABLES
+\fBinstallf\fR inherits the value of the following environment variable.
+This variable is set when
+.IR pkgadd (1M)
+or
+.IR pkgrm (1M)
+is invoked with the \fB\-R\fR option.
+.TP
+.B PKG_INSTALL_ROOT
+If present, defines the full path name of a directory to use as the system's PKG_INSTALL_ROOT path.
+All product and package information files are then looked
+for in the directory tree, starting with the specified PKG_INSTALL_ROOT path.
+If not present, the default system path of \fB/\fR is used.
+.SH SEE ALSO
+.IR pkginfo (1),
+.IR pkgmk (1),
+.IR pkgparam (1),
+.IR pkgproto (1),
+.IR pkgtrans (1),
+.IR pkgadd (1M),
+.IR pkgask (1M),
+.IR pkgchk (1M),
+.IR pkgrm (1M),
+.IR removef (1M),
+.IR pkgmap (5)
+.SH NOTES
+When \fIftype\fR is specified, all applicable fields, as shown below, must be defined:
+.PP
+.sp
+.TS
+tab() box;
+lw(2.75i) lw(2.75i)
+lw(2.75i) lw(2.75i)
+.
+\fIftype\fRRequired Fields
+\fBp\fR, \fBx\fR, \fBd\fR, \fBf\fR, \fBv\fR, or \fBe\fR\fBmode  owner  group\fR
+\fBc\fR or \fBb\fR\fBmajor  minor mode  owner  group\fR
+.TE
+.LP
+The \fBinstallf\fR command will create directories, named pipes and special devices on the original invocation.
+Links are created when \fBinstallf\fR is invoked with the \fB\-f\fR option to indicate installation is complete.
+.PP
+Links should be specified as \fIpath1\fR\fB=\fR\fIpath2.\fR \fIpath1\fR indicates the destination and \fIpath2\fR indicates the source file.
+.PP
+Files installed with \fBinstallf\fR will be placed in the class \fBnone\fR, unless a class is defined with the command.
+Subsequently, they will be removed when the associated package is deleted.
+If this file should not be deleted at the same time as the package, be certain
+to assign it to a class which is ignored at removal time.
+If special action is required for the file before removal, a class must be defined with the command and an appropriate class action script delivered with the package.
+.PP
+When classes are used, \fBinstallf\fR must be used in one of the following forms:
+.PP
+.in +2
+.nf
+installf \fB\-c\fR class1 .\|.\|.\|
+installf \fB\-f\fR \fB\-c\fR class1 .\|.\|.\|
+installf \fB\-c\fR class2 .\|.\|.\|
+installf \fB\-f\fR \fB\-c\fR class2 .\|.\|.\|
+.fi
+.in -2

@@ -1,0 +1,153 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T  Copyright (c) 1992, Sun Microsystems, Inc.  All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)ckgid.1	1.5 (gritter) 3/4/07
+.\"
+.\" from OpenSolaris ckgid 1 "14 Sep 1992" "SunOS 5.11" "User Commands"
+.TH CKGID 1 "3/4/07" "Heirloom Packaging Tools" "User Commands"
+.SH NAME
+ckgid, errgid, helpgid, valgid \- prompts for and validates a group id
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBckgid\fR [\fB\-Q\fR] [\fB\-W\fR \fIwidth\fR] [\fB\-m\fR] [\fB\-d\fR \fIdefault\fR] [\fB\-h\fR \fIhelp\fR]
+[\fB\-e\fR \fIerror\fR] [\fB\-p\fR \fIprompt\fR] [\fB\-k\fR \fIpid\fR [\fB\-s\fR \fIsignal\fR]]
+.HP
+.PD 0
+.ad l
+\fBerrgid\fR [\fB\-W\fR \fIwidth\fR] [\fB\-e\fR \fIerror\fR]
+.HP
+.PD 0
+.ad l
+\fBhelpgid\fR [\fB\-W\fR \fIwidth\fR] [\fB\-m\fR] [\fB\-h\fR \fIhelp\fR]
+.HP
+.PD 0
+.ad l
+\fBvalgid\fR \fIinput\fR
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+\fBckgid\fR prompts a user and validates the response.
+It defines, among other things, a prompt message whose response should be an existing group ID, text for help and error messages,
+and a default value (which will be returned if the user responds with a carriage return).
+.PP
+All messages are limited in length to 70 characters and are formatted automatically.
+Any white space used in the definition (including newline) is stripped.
+The \fB\-W\fR option cancels the
+automatic formatting.
+When a tilde is placed at the beginning or end of a message definition, the default text will be inserted at that point, allowing both custom text and the default text to be displayed.
+.PP
+If the prompt, help or error message is not defined, the default message (as defined under \fBNOTES\fR) will be displayed.
+.PP
+Three visual tool modules are linked to the \fBckgid\fR command.
+They are \fBerrgid\fR (which formats and displays an error message), \fBhelpgid\fR (which formats
+and displays a help message), and \fBvalgid\fR (which validates a response).
+These modules should be used in conjunction with \fBFML\fR objects.
+In this instance,
+the \fBFML\fR object defines the prompt.
+.PP
+The following options and operands are supported:
+.PD 0
+.TP 14
+\fB\-d\fR\fI default\fR
+Defines the default value as \fIdefault\fR.
+The default is not validated and so does not have to meet any criteria.
+.TP
+\fB\-e\fR\fI error\fR
+Defines the error message as \fI error\fR.
+.TP
+\fB\-h\fR\fI help\fR
+Defines the help messages as \fI help\fR.
+.TP
+\fB\-k\fR\fI pid\fR
+Specifies that process \fBID\fR \fIpid\fR is to be sent a signal
+if the user chooses to abort.
+.TP
+\fB\-m\fR
+Displays a list of all groups when help is requested or when the user makes an error.
+.TP
+\fB\-p\fR\fI prompt\fR
+Defines the prompt message as \fIprompt\fR.
+.TP
+\fB\-Q\fR
+Specifies that quit will not be allowed as a valid response.
+.TP
+\fB\-s\fR\fI signal\fR
+Specifies that the process \fBID\fR \fIpid\fR defined with
+the \fB\-k\fR option is to be sent signal \fI signal\fR when quit is chosen.
+If no signal is specified, SIGTERM is used.
+.TP
+\fB\-W\fR\fI width\fR
+Specifies that prompt, help and error messages will be formatted to a line length of \fIwidth\fR.
+.TP
+\fB\fIinput\fR
+Input to be verified against \fB/etc/group\fR.
+.PD
+.SH EXIT STATUS
+The following exit values are returned:
+.PD 0
+.TP
+.B 0
+Successful execution.
+.TP
+.B 1
+\fBEOF\fR on input, or negative width on \fB\-W\fR option, or usage error.
+.TP
+.B 3
+User termination (quit).
+.PD
+.SH NOTES
+.PD 0
+The default prompt for \fBckgid\fR is:
+.PP
+.in +2
+.nf
+Enter the name of an existing group [?,q]:
+.fi
+.in -2
+.PP
+The default error message is:
+.PP
+.in +2
+.nf
+ERROR: Please enter one of the following group names: [\fIList\fR]
+.fi
+.in -2
+.PP
+If the \fB\-m\fR option of \fBckgid\fR is used, a list of valid groups is displayed here.
+.PP
+The default help message is:
+.PP
+.in +2
+.nf
+ERROR: Please enter one of the following group names: [\fIList\fR]
+.fi
+.in -2
+.PP
+If the \fB\-m\fR option of \fBckgid\fR is used, a list of valid groups is displayed here.
+.PP
+When the quit option is chosen (and allowed), \fBq\fR is returned along with the return code \fB3\fR.
+The \fBvalgid\fR module will not produce any output.
+It returns \fB0\fR for success and non-zero for failure.

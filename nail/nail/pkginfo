@@ -1,0 +1,11 @@
+# Sccsid @(#)pkginfo	1.2 (gritter) 2/25/07
+PKG=mailx
+NAME=Heirloom mailx
+DESC=A modernized variant of mailx.
+VENDOR=Gunnar Ritter
+HOTLINE=http://heirloom.sourceforge.net
+EMAIL=gunnarr@acm.org
+VERSION=070225
+ARCH=IA32,i386
+CATEGORY=utilities
+BASEDIR=/

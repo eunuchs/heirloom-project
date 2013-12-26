@@ -1,0 +1,208 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\"  Copyright 1989 AT&T  Copyright (c) 2005, Sun Microsystems, Inc.  All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)ckrange.1	1.5 (gritter) 3/4/07
+.\"
+.\" from OpenSolaris ckrange 1 "4 Nov 2005" "SunOS 5.11" "User Commands"
+.TH CKRANGE 1 "3/4/07" "Heirloom Packaging Tools" "User Commands"
+.SH NAME
+ckrange, errange, helprange, valrange \- prompts for and validates an integer
+.SH SYNOPSIS
+.HP
+.ad l
+.nh
+\fBckrange\fR [\fB\-Q\fR] [\fB\-W\fR \fIwidth\fR] [\fB\-l\fR \fIlower\fR] [\fB\-u\fR \fIupper\fR] [\fB\-b\fR \fIbase\fR]
+[\fB\-d\fR \fIdefault\fR] [\fB\-h\fR \fIhelp\fR] [\fB\-e\fR \fIerror\fR] [\fB\-p\fR \fIprompt\fR]
+[\fB\-k\fR \fIpid\fR [\fB\-s\fR \fIsignal\fR]]
+.HP
+.PD 0
+.ad l
+\fBerrange\fR [\fB\-W\fR \fIwidth\fR] [\fB\-e\fR \fIerror\fR] [\fB\-l\fR \fIlower\fR]
+[\fB\-u\fR \fIupper\fR] [\fB\-b\fR \fIbase\fR]
+.HP
+.PD 0
+.ad l
+\fBhelprange\fR [\fB\-W\fR \fIwidth\fR] [\fB\-h\fR \fIhelp\fR] [\fB\-l\fR \fIlower\fR]
+[\fB\-u\fR \fIupper\fR] [\fB\-b\fR \fIbase\fR]
+.HP
+.PD 0
+.ad l
+\fBvalrange\fR [\fB\-l\fR \fIlower\fR] [\fB\-u\fR \fIupper\fR] [\fB\-b\fR \fIbase\fR] \fIinput\fR
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+The \fBckrange\fR utility prompts a user for an integer between a specified range and determines whether this response is valid.
+It defines, among other things, a prompt message whose response should be an integer in the range specified, text for help and error messages, and a default
+value (which is returned if the user responds with a RETURN).
+.PP
+This command also defines a range for valid input.
+If either the lower or upper limit is left undefined, then the range is bounded on only one end.
+.PP
+All messages are limited in length to 79 characters and are formatted automatically.
+Tabs and newlines are removed after a single whitespace character in a message definition, but spaces are not removed.
+When a tilde is placed at the beginning or end of a message definition, the default text will
+be inserted at that point, allowing both custom text and the default text to be displayed.
+.PP
+If the prompt, help or error message is not defined, the default message (as defined under EXAMPLES) is displayed.
+.PP
+Three visual tool modules are linked to the \fBckrange\fR command.
+They are \fBerrange\fR (which formats and displays an error message on the standard output), \fBhelprange\fR (which formats and displays a help message on the standard output), and \fBvalrange\fR (which validates a response).
+.PP
+\fINote:\fR Negative "input" arguments confuse \fBgetopt\fR in \fBvalrange\fR.
+By inserting a "\(mi" before the argument, \fBgetopt\fR processing will stop.
+See
+.IR getopt (1)
+and
+.IR intro (1)
+about \fBgetopt\fR parameter handling.
+\fBgetopt\fR is used to parse positional parameters and to check for legal options.
+.PP
+The following options and operands are supported:
+.TP
+\fB\-b\fR \fIbase\fR
+Defines the base for input.
+Must be 2 to 36, default is 10.
+Base conversion uses
+.IR strtol (3C).
+Output is always base 10.
+.TP
+\fB\-d\fR \fIdefault\fR
+Defines the default value as \fIdefault\fR.
+\fIdefault\fR is converted using
+.IR strtol (3C)
+in the desired base.
+Any characters invalid in the specified base will terminate the \fBstrtol\fR conversion without error.
+.TP
+\fB\-e\fR \fIerror\fR
+Defines the error message as \fI error\fR.
+.TP
+\fB\-h\fR \fIhelp\fR
+Defines the help message as \fI help\fR.
+.TP
+\fB\-k\fR \fIpid\fR
+Specifies that process \fBID\fR \fIpid\fR is to be sent a signal if the user chooses to quit.
+.TP
+\fB\-l\fR \fIlower\fR
+Defines the lower limit of the range as \fIlower\fR.
+Default is the machine's largest negative long.
+.TP
+\fB\-p\fR \fIprompt\fR
+Defines the prompt message as \fIprompt\fR.
+.TP
+\fB\-Q\fR
+Specifies that quit will not be allowed as a valid response.
+.TP
+\fB\-s\fR \fIsignal\fR
+Specifies that the process \fBID\fR \fIpid\fR defined with the \fB\-k\fR option is to be sent signal \fIsignal\fR when quit is chosen.
+If no signal is specified, SIGTERM is used.
+.TP
+\fB\-u\fR \fIupper\fR
+Defines the upper limit of the range as \fIupper\fR.
+Default is the machine's largest positive long.
+.TP
+\fB\-W\fR \fIwidth\fR
+Specifies that prompt, help and error messages will be formatted to a line length of \fIwidth\fR.
+.TP
+\fB\fIinput\fR
+Input to be verified against upper and lower limits and base.
+.SH EXAMPLES
+\fBExample 1 \fRDefault base 10 prompt
+.LP
+The default base 10 prompt for \fBckrange\fR is:
+.PP
+.in +2
+.nf
+$ \fBckrange\fR
+Enter an integer between \fIlower_bound \fRand
+\fIupper_bound \fR[\fIlower_bound\(miupper_bound\fR,?,q]:
+.fi
+.in -2
+.PP
+\fBExample 2 \fRDefault base 10 error message
+.LP
+The default base 10 error message is:
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/errange\fR
+ERROR: Please enter an integer between \fIlower_bound \e\fR
+and \fIupper_bound\fR.
+.fi
+.in -2
+.PP
+\fBExample 3 \fRDefault base 10 help message
+.LP
+The default base 10 help message is:
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/helprange\fR
+Please enter an integer between \fIlower_bound\fR and \fIupper_bound\fR.
+.fi
+.in -2
+.PP
+\fBExample 4 \fRChanging messages for a base other than 10
+.LP
+The messages are changed from ``integer'' to ``base \fIbase\fR integer'' if the base is set to a number other than 10.
+For example,
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/helprange -b 36\fR
+.fi
+.in -2
+.PP
+\fBExample 5 \fRUsing the quit option
+.LP
+When the quit option is chosen (and allowed), \fBq\fR is returned along with the return code \fB3\fR.
+Quit input gets a trailing newline.
+.PP
+\fBExample 6 \fRUsing the valrange module
+.LP
+The \fBvalrange\fR module will produce a usage message on stderr.
+It returns \fB0\fR for success and non-zero for failure.
+.PP
+.in +2
+.nf
+$ \fB/usr/sadm/bin/valrange\fR
+usage: valrange [-l lower] [-u upper] [-b base] input
+.fi
+.in -2
+.sp
+.SH EXIT STATUS
+The following exit values are returned:
+.PD 0
+.TP
+.B 0
+Successful execution.
+.TP
+.B 1
+\fBEOF\fR on input, or negative width on \fB\-W\fR option, or usage error.
+.TP
+.B 2
+Usage error.
+.TP
+.B 3
+User termination (quit).
+.PD

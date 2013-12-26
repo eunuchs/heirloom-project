@@ -1,0 +1,316 @@
+$ Sccsid @(#)en_US	1.55 (gritter) 7/10/04
+$quote $
+$ Messages for nail, a mail user agent
+$set 1
+1 $panic: $
+2 \n
+3 Too much "sourcing" going on.\n
+4 "Source" stack over-pop.\n
+5 Unmatched "if"\n
+6 No more mail.\n
+7 On last screenful of messages\n
+8 On first screenful of messages\n
+9 Unrecognized scrolling command "%s"\n
+10 --- DELETED ---
+11 $%c%c%3d %s%-*.*s  %16.16s %s\n$
+12 $%c%c%3d %s%-*.*s  %16.16s %s %.*s\n$
+13 %d\n
+14 Commands are:\n
+15 $%s, $
+16 variable cmd not set\n
+17 Message %2d:\n
+18 No messages to pipe.
+19 Message %2d:\n
+20 No value set for "folder"\n
+21 No messages applicable\n
+22 At EOF\n
+23 No messages to %s.\n
+24 Cannot determine message sender to %s.\n
+25 [Appended]
+26 [New file]
+27 binary
+28 No file specified.\n
+29 At EOF\n
+30 No more messages\n
+31 Okie dokie
+32 $ -- Core dumped.\n$
+33 $  -- Can't dump core.\n$
+34 No fields currently being %s.\n
+35 --- DELETED ---
+36 $    Nail   Commands\n\
+t <message list>                type messages\n\
+n                               goto and type next message\n\
+e <message list>                edit messages\n\
+f <message list>                give head lines of messages\n\
+d <message list>                delete messages\n\
+s <message list> file           append messages to file\n\
+u <message list>                undelete messages\n\
+R <message list>                reply to message senders\n\
+r <message list>                reply to message senders and all recipients\n\
+pre <message list>              make messages go back to /var/mail\n\
+m <user list>                   mail to specific users\n\
+q                               quit, saving unresolved messages in mbox\n\
+x                               quit, do not remove system mailbox\n\
+h                               print out active message headers\n\
+!                               shell escape\n\
+cd [directory]                  chdir to directory or home if none given\n\
+\n\
+A <message list> consists of integers, ranges of same, or user names separated\n\
+by spaces.  If omitted, Nail uses the last message typed.\n\
+\n\
+A <user list> consists of user names or aliases separated by spaces.\n\
+Aliases are defined in .mailrc in your home directory.\n$
+37 Sorry, can't reply to multiple messages at once\n
+38 --- DELETED ---
+39 Cannot "preserve" in edit mode\n
+40 %d: %d/%u\n
+41 Non-null variable name required\n
+42 Illegal nested "if"\n
+43 Unrecognized if-keyword: "%s"\n
+44 "Else" without matching "if"\n
+45 Mail's idea of conditions is screwed up\n
+46 "Endif" without matching "if"\n
+47 No recipient specified.
+48 No applicable messages.
+49 $-----------------------------------------------------------\n\
+The following ~ escapes are defined:\n\
+~~              Quote a single tilde\n\
+~@ [file ...]   Edit attachment list\n\
+~b users        Add users to "blind" cc list\n\
+~c users        Add users to cc list\n\
+~d              Read in dead.letter\n\
+~e              Edit the message buffer\n\
+~f messages     Read in messages\n\
+~F messages     Same as ~f, but keep all header lines\n\
+~h              Prompt for to list, subject and cc list\n\
+~r file         Read a file into the message buffer\n\
+~p              Print the message buffer\n\
+~m messages     Read in messages, right shifted by a tab\n\
+~M messages     Same as ~m, but keep all header lines\n\
+~s subject      Set subject\n\
+~t users        Add users to to list\n\
+~v              Invoke display editor on message\n\
+~w file         Write message onto file.\n\
+~?              Print this message\n\
+~!command       Invoke the shell\n\
+~|command       Pipe the message through the command\n\
+-----------------------------------------------------------\n$
+50 $#%u\tfilename: $
+51 temporary mail file
+52 $ wrote:\n\n$
+53 \n(Interrupt -- one more to kill letter)\n
+54 (continue)\n
+55 Use "." to terminate letter\n
+56 Unknown tilde escape.\n
+57 Interpolate what file?\n
+58 %s: Directory\n
+59 $"%s" $
+60 %d/%d\n
+61 Write what file!?\n
+62 -------\nMessage contains:\n
+63 Attachments:
+64 File exists\n
+65 %d/%ld\n
+66 temporary mail edit file
+67 No bytes from "%s" !?\n
+68 No appropriate messages\n
+69 Interpolating:
+70 temporary mail file
+71 %s seems a stale lock? Need to be removed by hand?\n
+72 $Edit message %d [ynq]? $
+73 temporary mail edit file
+74 cannot create tempfile\n
+75 --- DELETED ---
+76 --- DELETED ---
+77 temporary file seek
+78 --- DELETED ---
+79 --- DELETED ---
+80 No previous file\n
+81 "%s": Expansion failed.\n
+82 "%s": No match.\n
+83 "%s": Expansion buffer overflow.\n
+84 "%s": Ambiguous.\n
+85 --- DELETED ---
+86 --- DELETED ---
+87 temporary mail message file
+88 No mail for %s\n
+89 Use "quit" to quit.\n
+90 Can't "!" while sourcing\n
+91 Unknown command: "%s"\n
+92 May not execute "%s" while sending\n
+93 May not execute "%s" while sourcing\n
+94 May not execute "%s" -- message file is read only\n
+95 Cannot recursively invoke "%s"\n
+96 Illegal use of "message list"\n
+97 No applicable messages\n
+98 Illegal use of "message list"\n
+99 %s requires at least %d arg(s)\n
+100 %s takes no more than %d arg(s)\n
+101 Unknown argtype
+102 Interrupt\n
+103 $"%s": $
+104 1 message
+105 %d messages
+106 $ %d new$
+107 $ %d unread$
+108 $ %d deleted$
+109 $ %d saved$
+110 $ [Read only]$
+111 Version %s\n
+112 No numbers mixed with *\n
+113 Non-numeric second argument\n
+114 Referencing beyond EOF\n
+115 Referencing before 1\n
+116 Non-numeric second argument\n
+117 Unknown colon modifier "%s"\n
+118 Can't mix "*" with anything\n
+119 No applicable messages.\n
+120 No applicable messages from {%s
+121 , %s
+122 }\n
+123 No messages satisfy
+124 %d: Invalid message number\n
+125 %d: Inappropriate message\n
+126 Too many elements in the list; excess discarded.\n
+127 Missing %c\n
+128 Too many regrets
+129 Bad message number to mark
+130 Bad message number to unmark
+131 No applicable messages\n
+132 No applicable messages\n
+133 %d: Inappropriate message\n
+134 Unknown metachar (%c)\n
+135 Usage: %s -eiIUdFntBNHV~ -T FILE -u USER -h hops -r address -s SUBJECT -a FILE -q FILE -f FILE -b USERS -c USERS users\n
+136 --- DELETED ---
+137 Cannot give -f and people to send to.\n
+138 Send options without primary recipient specified.\n
+139 --- DELETED ---
+140 $%s version %s.  Type ? for help.\n$
+141 \nInterrupt\n
+142 %s contains invalid @@ sequence\n
+143 %s contains invalid character '
+144 '\n
+145 detract asked to insert commas\n
+146 temporary edit file
+147 temporary edit file
+148 temporary edit file
+149 Can't reopen image\n
+150 Expanding alias to depth larger than %d\n
+151 No names to unpack
+152 Internal error: bad stdio open mode %s\n
+153 Invalid file pointer
+154 Fatal error in process.\n
+155 Held 1 message in %s\n
+156 Held %d messages in %s\n
+157 Unable to lock mailbox
+158 New mail has arrived.\n
+159 --- DELETED ---
+160 --- DELETED ---
+161 --- DELETED ---
+162 temporary mail quit file
+163 temporary mail quit file
+164 Saved 1 message in mbox\n
+165 Saved %d messages in mbox\n
+166 Thou hast new mail.\n
+167 tmpfile
+168 $"%s" $
+169 removed\n
+170 complete\n
+171 $Enter filename for part $
+172 $: $
+173 tmpfile
+174 $\nPart $
+175 :\n
+176 Cannot open %s\n
+177 Warning: invalid encoding %s, using 8bit\n
+178 temporary mail file
+179 Cannot convert from %s to %s\n
+180 temporary mail file
+181 Sendmail arguments:
+182 . . . message not sent.\n
+183 EOT\n
+184 No message, no subject; hope that's ok\n
+185 Null message body; hope that's ok\n
+186 No recipients specified\n
+187 . . . message not sent.\n
+188 temporary mail file
+189 temporary mail file
+190 . . . message not sent.\n
+191 smtp-server: %s
+192 Connecting to %s . . .
+193 $ connected.\n$
+194 No SMTP support compiled in.\n
+195 String too large
+196 --- DELETED ---
+197 --- DELETED ---
+198 "%s" is not a user of this system\n
+199 user = %s, homedir = %s\n
+200 too long to edit\n
+201 Cannot associate a name with uid %d\n
+202 "%s": not a group\n
+203 "%s": undefined variable\n
+204 Need -f with -I.\n
+205 More than one file given with -f\n
+206 $%c%c%3d %s%-*.*s  %16.16s %s\n$
+207 $%c%c%3d %s%-*.*s  %16.16s %s "%.*s"\n$
+208 warning: incomplete line - newline appended\n
+209 Must specify alias or group to remove\n
+210 [Binary content]\n\n
+211 removed.\n
+212 updated.\n
+213 <Unknown date>
+214 Loaded 1 new message\n
+215 Loaded %d new messages\n
+216 No POP3 support compiled in.\n
+217 Cannot handle protocol: %s\n
+218 POP3 error: %s
+219 POP3 connection already closed.\n
+220 expasion name for shortcut missing\n
+221 too many arguments\n
+222 need shortcut names to remove\n
+223 %s: no such shortcut\n
+224 --- DELETED ---
+225 No SSL support compiled in.\n
+226 Cannot determine parent Message-ID of the current message\n
+227 Parent message not found\n
+228 No previously current message\n
+229 Error with certificate at depth: %i\n
+230 $ issuer = %s\n$
+231 $ subject = %s\n$
+232 $ err %i: %s\n$
+233 Error loading
+234 $ %s$
+235 $ or$
+236 $ %s$
+237 \n
+238 cannot load private key from file %s\n
+239 cannot load certificate from file %s\n
+240 invalid ciphers: %s\n
+241 Unexpected EOF on SMTP connection\n
+242 Syntax error in "%s"\n
+243 Error loading default CA locations\n
+244 Invalid SSL method "%s"\n
+245 entropy daemon at "%s" not available\n
+246 entropy file at "%s" not available\n
+247 writing entropy data to "%s" failed\n
+248 no certificate from "%s"\n
+249 host certificate does not match "%s"\n
+250 POP3 read failed
+251 unknown service: %s\n
+252 could not resolve host: %s\n
+253 could not create socket
+254 could not connect
+255 SMTP read failed
+256 SMTP write error
+257 Cannot execute "%s" without active mailbox\n
+258 No mail at %s\n
+259 POP3 write error
+260 invalid POP3 STAT response: %s\n
+261 SSL_CTX_new() failed
+262 SSL_new() failed
+263 could not initiate SSL/TLS connection
+264 $Continue (y/n)? $
+265 invalid value of ssl-verify: %s\n
+266 Ignoring header field "%s"\n
+267 Restoring deleted header lines\n
+268 Pipe to: "%s"\n

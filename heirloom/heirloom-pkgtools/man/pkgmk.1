@@ -1,0 +1,189 @@
+.\"
+.\" CDDL HEADER START
+.\"
+.\" The contents of this file are subject to the terms of the
+.\" Common Development and Distribution License (the "License").
+.\" You may not use this file except in compliance with the License.
+.\"
+.\" You can obtain a copy of the license at usr/src/OPENSOLARIS.LICENSE
+.\" or http://www.opensolaris.org/os/licensing.
+.\" See the License for the specific language governing permissions
+.\" and limitations under the License.
+.\"
+.\" When distributing Covered Code, include this CDDL HEADER in each
+.\" file and include the License file at usr/src/OPENSOLARIS.LICENSE.
+.\" If applicable, add the following below this CDDL HEADER, with the
+.\" fields enclosed by brackets "[]" replaced with your own identifying
+.\" information: Portions Copyright [yyyy] [name of copyright owner]
+.\"
+.\" CDDL HEADER END
+.\" Copyright 1989 AT&T
+.\" Copyright (c) 2001, Sun Microsystems, Inc.  All Rights Reserved
+.\" Portions Copyright (c) 2007 Gunnar Ritter, Freiburg i. Br., Germany
+.\"
+.\" Sccsid @(#)pkgmk.1	1.8 (gritter) 2/25/07
+.\"
+.\" from OpenSolaris pkgmk 1 "10 Jan 2001" "SunOS 5.11" "User Commands"
+.TH PKGMK 1 "2/25/07" "Heirloom Packaging Tools" "User Commands"
+.SH NAME
+pkgmk \- produce an installable package
+.SH SYNOPSIS
+.HP
+.PD 0
+.ad l
+.nh
+\fBpkgmk\fR [\fB\-o\fR] [\fB\-a\fR \fIarch\fR] [\fB\-b\fR \fIbase_src_dir\fR] [\fB\-d\fR \fIdevice\fR]
+[\fB\-f\fR \fIprototype\fR] [\fB\-l\fR \fIlimit\fR] [\fB\-p\fR \fIpstamp\fR] [\fB\-r\fR \fIroot_path\fR]
+[\fB\-v\fR \fIversion\fR] [\fIvariable=value\fR]... [\fIpkginst\fR]
+.br
+.PD
+.ad b
+.hy 1
+.SH DESCRIPTION
+The \fBpkgmk\fR utility produces
+an installable package to be used as input to the
+.IR pkgadd (1M)
+command.
+The package contents will be in directory structure format.
+.PP
+The command uses the package
+.IR prototype (5)
+file as input
+and creates a
+.IR pkgmap (5)
+file.
+The contents for each entry in the \fBprototype\fR file is copied to the appropriate output location.
+Information concerning the contents (checksum, file size, modification date) is computed and stored in the \fBpkgmap\fR
+file, along with attribute information specified in the \fBprototype\fR file.
+.PP
+\fBpkgmk\fR searches for the files listed in the
+.IR prototype (5)
+file as described in the following conditions.
+\fINote:\fR If a prototype file contains the explicit location of the file to include in the package, then the following search explanations do not apply.
+.RS
+.TP
+1.
+If neither \fB\-b\fR nor \fB\-r\fR options are specified, the file name component of each file path listed in the
+.IR prototype (5)
+file is expected to be found in the same directory as the
+.IR prototype (5)
+file
+.TP
+2.
+If \fB\-b\fR is specified as a relative path (without a leading "\fB/\fR"), then \fIbase_src_dir\fR is prepended to the relative file
+paths from the
+.IR prototype (5)
+file.
+The resulting path is searched for in the \fIroot_path\fR directories.
+If a \fIroot_path\fR is not specified, it defaults to "\fB/\fR".
+.TP
+3.
+If \fB\-b\fR is specified as an absolute path (with a leading "\fB/\fR"), then \fIbase_src_dir\fR is prepended to the relative paths
+from the
+.IR prototype (5)
+file and the result is the location of the file.
+\fIroot_path\fR is \fInot\fR searched.
+.TP
+4.
+If \fB\-r\fR is specified, then full file paths are used from the
+.IR prototype (5)
+file.
+Relative paths
+have \fIbase_src_dir\fR prepended.
+If \fIbase_src_dir\fR is not specified, it defaults to "".
+The resulting path is searched for in each directory of the \fIroot_path\fR.
+.RE
+.PP
+If you created your prototype file using "\fBpkgproto a/relative/path\fR" or "\fBpkgproto a/relative/path=install/path\fR", then you should use the \fB\-r\fR \fIroot_path\fR option to specify the location of \fBa/relative/path\fR so that \fBpkgmk\fR can correctly locate your source files.
+.PP
+The following options and operands are supported:
+.TP 15
+\fB\-a\fR \fIarch\fR
+Overrides the architecture information provided in the
+.IR pkginfo (5)
+file with \fIarch\fR.
+.TP
+\fB\-b\fR \fIbase_src_dir\fR
+Prepends the indicated \fIbase_src_dir\fR to locate relocatable objects on the source
+machine.
+Use this option to search for all objects in the prototype file.
+\fBpkgmk\fR expects to find the objects in /\fIbase_src_dir\fR or to locate the objects by use
+of the \fB\-b\fR and \fB\-r\fR options, respectively.
+.TP
+\fB\-d\fR \fIdevice\fR
+Creates the package on \fIdevice\fR.
+\fIdevice\fR can be an absolute
+directory pathname or the identifiers for a floppy disk or removable disk (for example, \fB/dev/diskette\fR).
+The default device is the installation spool directory (\fB/var/spool/pkg\fR).
+.TP
+\fB\-f\fR \fIprototype\fR
+Uses the file \fIprototype\fR as input to the command.
+The default \fIprototype\fR filename is [\fBPp\fR]\fBrototype\fR.
+.TP
+\fB\-l\fR \fIlimit\fR
+Specifies the maximum size in 512 byte blocks of the output device as \fBlimit\fR.
+By default,
+if the output file is a directory or a mountable device, \fBpkgmk\fR will employ the
+.IR df (1M)
+command to dynamically calculate the amount of available space on the output device.
+This option is useful in conjunction with
+.IR pkgtrans (1)
+to create a package with a datastream format.
+.TP
+.B \-o
+Overwrites the same instance; package instance will be overwritten if it already exists.
+.TP
+\fB\-p\fR \fIpstamp\fR
+Overrides the production stamp definition in the
+.IR pkginfo (5)
+file with \fIpstamp\fR.
+.TP
+\fB\-r\fR \fIroot_path\fR
+Uses the indicated \fIroot_path\fR with the source pathname appended to locate objects
+on the source machine, using a comma (\fB,\fR) as the separator for the path elements.
+If this option is specified, look for the full destination path in each of the directories specified.
+If neither \fB\-b\fR nor \fB\-r\fR is specified, look for the leaf filename in the current directory.
+.TP
+\fB\-v\fR \fIversion\fR
+Overrides the version information provided in the
+.IR pkginfo (5)
+file with \fIversion\fR.
+.TP
+\fB\fIvariable=value\fR
+Places the indicated variable in the packaging environment.
+(See
+.IR prototype (5)
+for definitions of variable specifications.)
+.TP 15
+\fB\fIpkginst\fR
+A package designation by its instance.
+An instance can be the package abbreviation
+or a specific instance (for example, \fBinst.1\fR or \fBinst.2\fR).
+All instances of a package can be requested by \fBinst.*\fR.
+The asterisk character (\fB*\fR) is a special character to some shells and may need to be escaped.
+In the C-Shell, "*" must be surrounded by single quotes (\fB'\fR) or preceded by a backslash (\e).
+.SH SEE ALSO
+.IR pkgparam (1),
+.IR pkgproto (1),
+.IR pkgtrans (1),
+.IR uname (1),
+.IR df (1M),
+.IR pkgadd (1M),
+.IR pkginfo (5),
+.IR pkgmap (5),
+.IR prototype (5)
+.SH NOTES
+Architecture information is provided on the command line with the \fB\-a\fR option or in the
+.IR prototype (5)
+file.
+If no architecture information is supplied, \fBpkgmk\fR uses the output of \fBuname\fR \fB\-m\fR (see
+.IR uname (1)).
+.PP
+Version information is provided on the command line with the \fB\-v\fR option or in the
+.IR pkginfo (5)
+file.
+If no version information is supplied, a default based on the current date will be provided.
+.PP
+Command line definitions for both architecture and version override the
+.IR prototype (5)
+definitions.
